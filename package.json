@@ -1,0 +1,32 @@
+{
+  "name": "hrku-client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -- -p 3333",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.12.3",
+    "axios": "^0.21.1",
+    "moment": "^2.29.1",
+    "next": "11.1.0",
+    "next-seo": "^4.26.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-icons": "^4.2.0",
+    "sass": "^1.38.0",
+    "zustand": "^3.5.9"
+  },
+  "devDependencies": {
+    "@types/react": "17.0.19",
+    "autoprefixer": "^10.3.2",
+    "eslint": "7.32.0",
+    "eslint-config-next": "11.1.0",
+    "postcss": "^8.3.6",
+    "tailwindcss": "^2.2.7",
+    "typescript": "4.3.5"
+  }
+}
