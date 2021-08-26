@@ -8,7 +8,7 @@ const theme = unstable_createMuiStrictModeTheme({
       main: '#1976d2',
     },
     secondary: {
-      main: '#f2277c',
+      main: red.A400,
     },
     error: {
       main: red.A400,

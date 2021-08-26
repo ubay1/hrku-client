@@ -15,6 +15,27 @@ a {
   box-sizing: border-box;
 }
 
+.comp_dialog {
+  min-width: 320px;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                    login                                   */
+/* -------------------------------------------------------------------------- */
+.bg-login {
+  background-image: url('../images/bg_login.webp');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-width: 320px;
+
+  .card_login {
+    background-color: rgb(254 254 254 / 90%);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+  }
+}
+
 
 /* -------------------------------------------------------------------------- */
 /*                                    home                                    */

@@ -6,18 +6,15 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import React from 'react';
 import theme from '../utils/theme';
-import { useUserStore } from "../store/user";
 import {useRouter} from 'next/router'
+import Cookies from "js-cookie";
+import {store} from '../store'
+import { Provider } from 'react-redux'
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const user = useUserStore(state => state.isLogin)
   const router = useRouter()
-  
+
   React.useEffect(() => {
-    if (user === false) {
-      router.push('/login')
-    }
-    
     const jssStyles: any = document.querySelector('#jss-server-side');
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles);
@@ -25,11 +22,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
   
   return (
-    <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-      <CssBaseline />
-      <Component {...pageProps} />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </Provider>
   );
 }
 export default MyApp

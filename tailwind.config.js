@@ -9,7 +9,8 @@ module.exports = {
       'desktop': '1200px',
       'lg-desktop': '1400px',
     },
-    extend: {},
+    extend: {
+    },
   },
   variants: {
     extend: {},
