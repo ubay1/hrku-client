@@ -1,6 +1,7 @@
 import 'tailwindcss/tailwind.css'
 import '../assets/scss/app.css'
 import '../assets/scss/global.scss';
+import 'react-toastify/dist/ReactToastify.css';
 import type { AppProps } from 'next/app'
 import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';

@@ -27,7 +27,7 @@ export function AxiosNormal<AxiosInstance>(token?: string ) {
     baseURL: SERVER_URL,
     timeout: 30 * 1000,
     headers: {
-      token: token || '-',
+      Authorization: `Bearer ${token}` || '-',
     }
   });
 
@@ -57,6 +57,11 @@ export function AxiosNormal<AxiosInstance>(token?: string ) {
           Cookies2.remove('gwt')
           window.location.replace('/login?msgerr=token_expired')
           return Promise.reject(error)
+        }
+
+        // if unauthorized
+        if (error.response.status === 401) {
+          return Promise.reject(error.response.data)
         }
 
         if (error.response.data !== '') {

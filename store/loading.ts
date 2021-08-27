@@ -6,7 +6,7 @@ export interface LoadingState {
 }
 
 const initialState: LoadingState = {
-  show: false,
+  show: true,
   timeout: 0,
 }
 
