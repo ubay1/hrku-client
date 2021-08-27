@@ -39,7 +39,7 @@ const initialState: UserState = {
   },
 }
 
-export const expiredToken = (dispatch: AppDispatch) => {
+export const expiredToken = (dispatch: AppDispatch, message?: string) => {
   Cookies.remove('token')
   dispatch(setReduxUsersProfile({
     fullname: '',
@@ -49,15 +49,12 @@ export const expiredToken = (dispatch: AppDispatch) => {
     role_name: '',
     slug_role_name: '',
   }))
-  
-  setTimeout(() => {
-    window.location.replace('/login?msg=please_login');
-    setTimeout(() => {
-      dispatch(setLoading({
-        show: false
-      }))
-    }, 1000);
-  }, 3000)
+
+  dispatch(setLoading({
+    show: false
+  }))
+
+  window.location.replace('/login')
 }
 
 // untuk ambil data user
@@ -95,8 +92,6 @@ export const initialStateUserAuthByAsync = async (dispatch: AppDispatch) => {
               token: tokens
             })
 
-            // console.log(responseGetUser)
-
             if (responseGetUser.status === 200) {
               dispatch(setAuthStatus({
                 token: tokens,
@@ -108,19 +103,20 @@ export const initialStateUserAuthByAsync = async (dispatch: AppDispatch) => {
                 email: responseGetUser.data.data.email,
                 role_name: responseGetUser.data.data.role.role_name,
                 slug_role_name: responseGetUser.data.data.role.slug_role_name,
-                foto: responseGetUser.data.data.role.foto,
-                gender: responseGetUser.data.data.role.gender,
+                foto: responseGetUser.data.data.foto,
+                gender: responseGetUser.data.data.gender,
               }))
             }
 
           } catch (error) {
-            console.log(error)
+            // console.log(error)
+            expiredToken(dispatch)
           }
         }
       }
     } catch (e: any) {
-      // error reading value
       console.trace(e.message)
+      expiredToken(dispatch)
     }
     return defaultValue
   })
@@ -136,8 +132,8 @@ const userSlice = createSlice({
       state.profile.phone = action.payload.phone,
       state.profile.email = action.payload.email,
       state.profile.role_name = action.payload.role_name,
-      state.profile.slug_role_name = action.payload.slug_role_name
-      state.profile.foto = action.payload.foto
+      state.profile.slug_role_name = action.payload.slug_role_name,
+      state.profile.foto = action.payload.foto,
       state.profile.gender = action.payload.gender
     },
 

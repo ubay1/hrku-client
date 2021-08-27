@@ -21,6 +21,7 @@ import { AppDispatch } from '../../store';
 import { RootState } from '../../store/rootReducer';
 import Lottie from "lottie-react";
 import LoadingScreen from '../../assets/lottie_file/loading-book.json';
+import { setLoading } from '../../store/loading';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -53,6 +54,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
 const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
   toast.configure()
+  const classes = useStyles();
   
   const loading = useSelector((state: RootState) => state.loading);
   const userRedux = useSelector((state: RootState) => state.user);
@@ -61,7 +63,6 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter()
   const msg = router.query.msg;
 
-  const classes = useStyles();
 
   /* -------------------------------------------------------------------------- */
   /*                                    state                                   */
@@ -74,20 +75,39 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [loadingSubmit, setLoadingSubmit] = React.useState(false);
   const [open, setOpen] = React.useState(false);
 
+  const tokenCookies = Cookies.get('token')
+
   /* -------------------------------------------------------------------------- */
-  /*                                  lifecycle                                 */
+  /*                                  hooks                                 */
   /* -------------------------------------------------------------------------- */
-  React.useEffect(() => {
-    if (userRedux.token !== '') {
-      router.push('/')
+  useEffect(() => {
+    // console.log(userRedux)
+    if (tokenCookies === '' || tokenCookies === undefined) {
+      dispatch(setLoading({show: false}))
     } else {
-      initialStateUserAuthByAsync(dispatch)
+      if (userRedux.token !== '') {
+        router.push('/')
+        // dispatch(setLoading({show: false}))
+        // initialStateUserAuthByAsync(dispatch)
+      } else {
+        initialStateUserAuthByAsync(dispatch)
+      }
     }
   }, [dispatch, userRedux.token])
   
   React.useEffect(() => {
     if (msg === 'please_login') {
       toast('Silahkan login terlebih dahulu', {
+        position: "bottom-right",
+        autoClose: 5000,
+        type: 'error',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        transition: Slide
+      })
+    } else if (msg === 'token_expired') {
+      toast('Silahkan login kembali', {
         position: "bottom-right",
         autoClose: 5000,
         type: 'error',
@@ -146,8 +166,8 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
             email: responseProfil.data.data.email,
             role_name: responseProfil.data.data.role.role_name,
             slug_role_name: responseProfil.data.data.role.slug_role_name,
-            foto: responseProfil.data.data.role.foto,
-            gender: responseProfil.data.data.role.gender,
+            foto: responseProfil.data.data.foto,
+            gender: responseProfil.data.data.gender,
           }))
           
           if (responseProfil.status === 200) {
