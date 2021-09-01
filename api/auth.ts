@@ -17,3 +17,14 @@ export async function HTTPSubmitLogin(param: {email: string, password: string}):
     }
   })
 }
+
+export async function HTTPSubmitLogout(param: {token: string}): Promise<any> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await AxiosNormal(param.token).post(`${SERVER_URL}/user/logout`)
+      return resolve(response)
+    } catch (error) {
+      return reject(error)
+    }
+  })
+}

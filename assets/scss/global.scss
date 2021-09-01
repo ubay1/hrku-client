@@ -4,6 +4,7 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    background-color: white;
 }
 
 a {
@@ -19,37 +20,185 @@ a {
   min-width: 320px;
 }
 
+.bg-loading {
+  background-color: white !important;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                    login                                   */
 /* -------------------------------------------------------------------------- */
 .bg-login {
-  background-image: url('../images/bg_login2.webp');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  min-width: 320px;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  background-color: white;
 
-  .card_login {
-    background-color: rgb(254 254 254 / 90%);
-    backdrop-filter: blur(10px);
-    border-radius: 10px;
+  .image-login {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
   }
+  .card-login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+  }
+}
+
+@media screen and (min-width: 0px) and (max-width: 768px) {
+  .bg-login {
+    display: flex !important;
+    justify-content: center !important;
+    grid-template-columns: unset !important;
+    .image-login {
+      display: none !important;
+    }
+  }
+
 }
 
 
 /* -------------------------------------------------------------------------- */
 /*                                    home                                    */
 /* -------------------------------------------------------------------------- */
-.header {
-  background-color: #fff !important;
-  padding: 0px 10px;
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
-  .logo {
-    float: left;
-    width: 50px;
-    height: 31px;
-    margin: 16px 0px 16px 0;
-    display: flex;
-    align-items: center;
+.dashboard {
+  .greeting {
+    // font-family: 'DM Serif Display', serif;
+    // text-shadow: 3px 3px 5px #dbd6d6;
+    font-weight: 600;
+  }
+  .body {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    text-align: center;
+    .card-product {
+      cursor: pointer;
+      transition-timing-function: ease-in;
+      transition: box-shadow 99ms;
+      &:hover {
+        --tw-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+        border: unset;
+        transition-timing-function: ease-out;
+        transition: box-shadow 99ms;
+      }
+      .title {
+        font-family: 'Roboto', sans-serif;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 992px) {
+  .dashboard {
+    .body {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+  }
+}
+
+@media (orientation: landscape) and (max-width: 767.8px) {
+  .dashboard {
+    height: 100% !important;
+  }
+}
+@media screen and (min-width: 576px) and (max-width: 767.8px) {
+  .dashboard {
+    height: 100vh;
+    .body {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px !important;
+    }
+  }
+}
+
+// @media (orientation: landscape) and (max-width:768px) {
+//   .dashboard {
+//     height: 100% !important;
+//     .footer {
+//       position: relative !important;
+//     }
+//   }
+// }
+
+@media screen and (max-width: 575.8px) {
+  .dashboard {
+    height: 100%;
+    .body {
+      grid-template-columns: repeat(1, 1fr) !important;
+      gap: 10px !important;
+    }
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   profil                                   */
+/* -------------------------------------------------------------------------- */
+.profil {
+  .card {
+    .bg-foto {
+      background-image: url('https://images.unsplash.com/photo-1585675705484-c2239e62a395?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=675&q=80');
+      background-position: center;
+      border-radius: 10px 10px 0px 0px;
+
+      &-backdrop {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(3px);
+      }
+    }
+  }
+}
+
+@media (orientation: landscape) and (max-width: 767.8px) {
+  .profil {
+    height: 100% !important;
+  }
+}
+@media screen and (min-width: 576px) and (max-width: 767.8px) {
+  .profil {
+    height: 100vh;
+    .card {
+      width: 80% !important;
+    }
+  }
+}
+
+@media (orientation: landscape) and (max-width: 575.8px) {
+  .profil {
+    height: 100% !important;
+  }
+}
+@media screen and (min-width: 430px) and (max-width: 575.8px) {
+  .profil {
+    height: 100vh;
+    .card {
+      width: 100% !important;
+    }
+  }
+}
+
+@media (orientation: landscape) and (max-width: 429.8px) {
+  .profil {
+    height: 100% !important;
+  }
+}
+@media screen and (min-width: 0px) and (max-width: 429.8px) {
+  .profil {
+    height: 100vh;
+    .card {
+      width: 100% !important;
+      .detailuser {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        row-gap: 30px;
+      }
+    }
   }
 }

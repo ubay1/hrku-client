@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import Image from 'next/image'
 import Logo from "../assets/images/hrlogo.png";
 import { AppBar, Toolbar, IconButton, Typography, Button, makeStyles, Menu, MenuItem } from "@material-ui/core";
-import { RiMenu3Fill,RiArrowDownSLine } from "react-icons/ri";
-import { MdAccountCircle } from "react-icons/md";
+import { RiMenu3Fill,RiArrowDownSLine, RiLogoutBoxRLine, RiCopyrightLine } from "react-icons/ri";
+import { MdAccountCircle, MdPerson } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/rootReducer";
 import { AppDispatch } from "../store";
@@ -13,6 +13,8 @@ import Lottie from "lottie-react";
 import LoadingScreen from '../assets/lottie_file/loading-book.json';
 import Cookies from "js-cookie";
 import router from "next/router";
+import { NextSeo } from "next-seo";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,8 +28,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Base: React.FC = ({children}) => {
+export const Base: React.FC = ({children}, page) => {
   const classes = useStyles()
+  
+  const yearNow = moment().format('YYYY')
 
   const tokenCookies = Cookies.get('token')
 
@@ -47,7 +51,7 @@ export const Base: React.FC = ({children}) => {
   /*                                  hooks                                     */
   /* -------------------------------------------------------------------------- */
   useEffect(() => {
-    // console.log(tokenCookies)
+    // console.log(userRedux)
     if (tokenCookies === '' || tokenCookies === undefined) {
       router.push('/login')
     } else {
@@ -73,47 +77,27 @@ export const Base: React.FC = ({children}) => {
 
   if (loading.show === true) {
     return(
-      <div className="flex items-center justify-center flex-col h-screen">
+      <div className="bg-loading flex items-center justify-center flex-col h-screen">
+        <NextSeo
+          title="HRKU All In One Apps"
+          description="Hrku adalah aplikasi AllInOne yang dibuat untuk memudahkan HRD dalam mengelola penggajian, data karyawan, cuti karyawan, dll."
+        />
         <Lottie animationData={LoadingScreen} style={{ width: 200 }} />
       </div>
     )
   } else {
     return(
       <div>
-        <AppBar position="static">
-          <Toolbar>
-            {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-              <RiMenu3Fill color="#fff"/>
-            </IconButton> */}
-            <Typography variant="h6" className={`${classes.title} text-white`}>
-              HR-KU
-            </Typography>
-            <Button 
-              color="primary" 
-              variant="text"
-              aria-controls="simple-menu" 
-              aria-haspopup="true" 
-              onClick={handleClick}
-            >
-              <Typography 
-                variant="button" 
-                className={`${classes.title}  text-white flex items-center justify-center`}>
-                {<MdAccountCircle size="25px" /> ?? <img src={userRedux.profile.foto} alt="" /> } <RiArrowDownSLine size="20px"/>
-              </Typography>
-            </Button>
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>Logout</MenuItem>
-            </Menu>
-          </Toolbar>
-        </AppBar>
+        <NextSeo
+          title="HRKU All In One Apps"
+          description="Hrku adalah aplikasi AllInOne yang dibuat untuk memudahkan HRD dalam mengelola penggajian, data karyawan, cuti karyawan, dll."
+        />
         {children}
+
+        {/* footer */}
+        <div className="footer flex justify-center py-4 bg-white text-gray-300 items-center bottom-0 w-full">
+          <RiCopyrightLine size="18px" /> HRKU  {yearNow}
+        </div>
       </div>
     );
   }

@@ -6,10 +6,13 @@ const theme = unstable_createMuiStrictModeTheme({
   palette: {
     type: 'light',
     primary: {
-      main: '#1976d2',
+      main: '#2196f3',
     },
     secondary: {
-      main: '#dc004e',
+      main: '#ff1744',
+    },
+    info: {
+      main: '#315f72'
     },
     error: {
       main: '#f44336',

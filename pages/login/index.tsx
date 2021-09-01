@@ -21,7 +21,9 @@ import { AppDispatch } from '../../store';
 import { RootState } from '../../store/rootReducer';
 import Lottie from "lottie-react";
 import LoadingScreen from '../../assets/lottie_file/loading-book.json';
+import HrdLottie from '../../assets/lottie_file/hrd.json';
 import { setLoading } from '../../store/loading';
+import ImageLogin from '../../assets/images/bg_login.webp'
 
 const useStyles = makeStyles({
   wrapper: {
@@ -235,14 +237,19 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
     )
   } else {
     return (
-      <div className="h-screen flex justify-center items-center bg-login">
+      <div className="h-screen bg-login">
         <NextSeo
-          title="Login"
-          titleTemplate = '%s - HRKU Client'
-          description="Hrku Login Description"
+          title="HRKU All In One Apps"
+          description="Hrku adalah aplikasi AllInOne yang dibuat untuk memudahkan HRD dalam mengelola penggajian, data karyawan, cuti karyawan, dll."
         />
-        <Container maxWidth="xs">
-          <Card className="card_login">
+        {/* <div className="image-login">
+          <Image src={ImageLogin} className="pointer-events-none"/>
+        </div> */}
+        <div className="tablet:flex items-center justify-center flex-col h-screen phone:hidden xphone:hidden">
+          <Lottie animationData={HrdLottie} style={{ width: 400 }} />
+        </div>
+        <div className="card-login">
+          <Card>
             <CardContent className="my-5">
               <form 
                 onSubmit={formik.handleSubmit}
@@ -326,8 +333,7 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
               </form>
             </CardContent>
           </Card>
-        </Container>
-        
+        </div>
         <DialogMigrate
           open={open}
           disableEscapeKeyDown
