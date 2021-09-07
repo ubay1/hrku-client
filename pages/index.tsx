@@ -27,14 +27,13 @@ const dataProduct = [
 ]
 
 const Home: NextPage = () => {
-
-  /* -------------------------------------------------------------------------- */
-  /*                                 state redux                                */
-  /* -------------------------------------------------------------------------- */
   const loading = useSelector((state: RootState) => state.loading);
   const userRedux = useSelector((state: RootState) => state.user);
   const dispatch: AppDispatch = useDispatch()
   
+  /* -------------------------------------------------------------------------- */
+  /*                                 show page                                  */
+  /* -------------------------------------------------------------------------- */
   return(
     <Base>
       <div className="h-screen dashboard bg-white">

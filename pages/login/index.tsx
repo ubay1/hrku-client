@@ -10,8 +10,6 @@ import { blue, red } from '@material-ui/core/colors';
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { useRouter } from 'next/router'
 import { Slide, toast } from 'react-toastify';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { HTTPSubmitLogin } from '../../api/auth';
 import { HTTPGetProfil } from '../../api/user';
 import Cookies from "js-cookie";
@@ -24,6 +22,8 @@ import LoadingScreen from '../../assets/lottie_file/loading-book.json';
 import HrdLottie from '../../assets/lottie_file/hrd.json';
 import { setLoading } from '../../store/loading';
 import ImageLogin from '../../assets/images/bg_login.webp'
+import { useForm } from "react-hook-form";
+import { ILoginValidation } from '../../types/formValidation';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -75,12 +75,13 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
     showPassword: false,
   });
   const [loadingSubmit, setLoadingSubmit] = React.useState(false);
+  const [disableBtnLogin, setDisableBtnLogin] = React.useState(false);
   const [open, setOpen] = React.useState(false);
 
   const tokenCookies = Cookies.get('token')
 
   /* -------------------------------------------------------------------------- */
-  /*                                  hooks                                 */
+  /*                                  hooks                                     */
   /* -------------------------------------------------------------------------- */
   useEffect(() => {
     // console.log(userRedux)
@@ -124,29 +125,18 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
   /* -------------------------------------------------------------------------- */
   /*                                 handle form                                */
   /* -------------------------------------------------------------------------- */
-  const formik = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-    },
-    onSubmit: values => {
-      // console.log(JSON.stringify(values, null, 2));
-      httpLoginUser(values)
-    },
-    validationSchema: Yup.object({
-      email: Yup.string()
-        .email("format email tidak sesuai")
-        .required("email wajib diisi"),
-      password: Yup.string()
-        .required("password wajib diisi"),
-    })
-  });
+  
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<ILoginValidation>();
+  const onSubmits = (data: any) => {
+    httpLoginUser(data)
+  };
 
   /* -------------------------------------------------------------------------- */
   /*                                   method                                   */
   /* -------------------------------------------------------------------------- */
   const httpLoginUser = async (params: {email: string, password: string}) => {
     setLoadingSubmit(true)
+    setDisableBtnLogin(true)
 
     try {
       const response = await HTTPSubmitLogin({
@@ -173,7 +163,6 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
           }))
           
           if (responseProfil.status === 200) {
-            setLoadingSubmit(false)
             toast(response.data.message, {
               position: "bottom-right",
               autoClose: 5000,
@@ -185,6 +174,7 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
             })
             
             router.push('/')
+            // setLoadingSubmit(false)
           }
         } catch (error: any) {
           const errors = JSON.parse(JSON.stringify(error))
@@ -198,6 +188,7 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
             transition: Slide
           })
           setLoadingSubmit(false)
+          setDisableBtnLogin(false)
         }
       }
     } catch (error: any) {
@@ -214,6 +205,7 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
         })
       }
       setLoadingSubmit(false)
+      setDisableBtnLogin(false)
     }
   }
 
@@ -229,6 +221,10 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
     setValues({ ...values, showPassword: !values.showPassword });
   };
 
+
+  /* -------------------------------------------------------------------------- */
+  /*                                 show page                                  */
+  /* -------------------------------------------------------------------------- */
   if (loading.show === true) {
     return(
       <div className="flex items-center justify-center flex-col h-screen">
@@ -252,7 +248,7 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
           <Card>
             <CardContent className="my-5">
               <form 
-                onSubmit={formik.handleSubmit}
+                onSubmit={handleSubmit(onSubmits)}
                 autoComplete="on"
                 className="flex flex-col justify-center items-center"
               >
@@ -260,38 +256,40 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
                   <Image src={Logo} width="70" height="70" className="pointer-events-none"/>
                 </div>
                 <div className="mb-4">
-                  <FormControl error={formik.errors.email ? true : false}>
+                  <FormControl error={errors.email ? true : false}>
                     <InputLabel htmlFor="standard-adornment-email">
                       Email
                     </InputLabel>
                     <Input 
                       placeholder="Masukan email"
                       className="w-56"
-                      name="email"
-                      onChange={formik.handleChange}
-                      value={formik.values.email}
+                      {...register("email", { 
+                        required: 'wajib diisi',
+                        pattern: {
+                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                          message: "format e-mail tidak sesuai",
+                        },
+                      })}
                       startAdornment={
                         <InputAdornment position="start">
                           <RiMailLine color="#000" size="20"/>
                         </InputAdornment>
                       }
                     />
-                    <FormHelperText>{formik.errors.email ? formik.errors.email : ''}</FormHelperText>
+                    <FormHelperText>{errors.email && errors.email.message}</FormHelperText>
                   </FormControl>
                 </div>
 
                 <div className="mb-2">
-                  <FormControl error={formik.errors.password ? true : false}>
+                  <FormControl error={errors.password ? true : false}>
                     <InputLabel htmlFor="standard-adornment-password">
                       Password
                     </InputLabel>
                     <Input 
-                      name="password"
                       placeholder="Masukan password"
                       className="w-56"
                       type={values.showPassword ? 'text' : 'password'}
-                      onChange={formik.handleChange}
-                      value={formik.values.password}
+                      {...register("password", { required: 'wajib diisi' })}
                       startAdornment={
                         <InputAdornment position="start">
                           <RiLock2Line color="#000" size="20"/>
@@ -308,7 +306,7 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
                         </InputAdornment>
                       }
                     />
-                    <FormHelperText>{formik.errors.password ? formik.errors.password : ''}</FormHelperText>
+                    <FormHelperText>{errors.password && errors.password.message}</FormHelperText>
                   </FormControl>
                 </div>
 
@@ -318,7 +316,7 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
                     variant="contained" 
                     color="primary"
                     className="w-56"
-                    disabled={loadingSubmit}
+                    disabled={disableBtnLogin}
                     type="submit"
                   >Masuk</Button>
                   {loadingSubmit && <CircularProgress size={24} className={classes.buttonProgress} />}
@@ -350,8 +348,13 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
                 <Input 
                   placeholder="Masukan email"
                   className="w-56"
-                  onChange={formik.handleChange}
-                  value={formik.values.email}
+                  {...register("email", { 
+                    required: 'wajib diisi',
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                      message: "format e-mail tidak sesuai",
+                    },
+                  })}
                   startAdornment={
                     <InputAdornment position="start">
                       <RiMailLine color="#000" size="20"/>

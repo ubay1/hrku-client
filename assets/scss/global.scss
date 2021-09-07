@@ -24,6 +24,14 @@ a {
   background-color: white !important;
 }
 
+// update foto profil modal
+.show_btn_crop {
+  display: inline-flex !important;
+}
+
+.hide_btn_crop {
+  display: none !important;
+}
 /* -------------------------------------------------------------------------- */
 /*                                    login                                   */
 /* -------------------------------------------------------------------------- */
@@ -102,14 +110,10 @@ a {
   }
 }
 
-@media (orientation: landscape) and (max-width: 767.8px) {
-  .dashboard {
-    height: 100% !important;
-  }
-}
 @media screen and (min-width: 576px) and (max-width: 767.8px) {
   .dashboard {
-    height: 100vh;
+    height: 100%;
+    min-height: 100vh;
     .body {
       grid-template-columns: repeat(2, 1fr) !important;
       gap: 10px !important;
@@ -117,18 +121,10 @@ a {
   }
 }
 
-// @media (orientation: landscape) and (max-width:768px) {
-//   .dashboard {
-//     height: 100% !important;
-//     .footer {
-//       position: relative !important;
-//     }
-//   }
-// }
-
 @media screen and (max-width: 575.8px) {
   .dashboard {
     height: 100%;
+    min-height: 100vh;
     .body {
       grid-template-columns: repeat(1, 1fr) !important;
       gap: 10px !important;
@@ -140,6 +136,8 @@ a {
 /*                                   profil                                   */
 /* -------------------------------------------------------------------------- */
 .profil {
+  height: 100%;
+  min-height: 100vh;
   .card {
     .bg-foto {
       background-image: url('https://images.unsplash.com/photo-1585675705484-c2239e62a395?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=675&q=80');
@@ -151,53 +149,30 @@ a {
         width: 100%;
         height: 100%;
         backdrop-filter: blur(3px);
+        border-radius: 10px 10px 0px 0px;
       }
     }
-  }
-}
 
-@media (orientation: landscape) and (max-width: 767.8px) {
-  .profil {
-    height: 100% !important;
-  }
-}
-@media screen and (min-width: 576px) and (max-width: 767.8px) {
-  .profil {
-    height: 100vh;
-    .card {
-      width: 80% !important;
+    .detailuser {
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+      row-gap: 30px;
+      align-items: flex-start;
     }
   }
 }
 
-@media (orientation: landscape) and (max-width: 575.8px) {
+@media screen and (max-width: 767.8px) {
   .profil {
-    height: 100% !important;
-  }
-}
-@media screen and (min-width: 430px) and (max-width: 575.8px) {
-  .profil {
-    height: 100vh;
+    // height: 100vh;
     .card {
-      width: 100% !important;
-    }
-  }
-}
-
-@media (orientation: landscape) and (max-width: 429.8px) {
-  .profil {
-    height: 100% !important;
-  }
-}
-@media screen and (min-width: 0px) and (max-width: 429.8px) {
-  .profil {
-    height: 100vh;
-    .card {
-      width: 100% !important;
+      width: 95% !important;
       .detailuser {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
         row-gap: 30px;
+        padding-left: 20px;
+        padding-right: 20px;
       }
     }
   }

@@ -10,6 +10,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch } from '../store';
 import { RootState } from '../store/rootReducer';
 import Logo from "../assets/images/hrlogo.png";
+import Blank from "../assets/images/blank.png";
+import moment from 'moment';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -39,11 +41,17 @@ const Header = () => {
   const loading = useSelector((state: RootState) => state.loading);
   const userRedux = useSelector((state: RootState) => state.user);
   const dispatch: AppDispatch = useDispatch()
-
+  
+  const myAvatar = process.env.PHOTO_URL+(userRedux.profile.foto as any)+'?'+moment()
   /* -------------------------------------------------------------------------- */
   /*                                    state                                   */
   /* -------------------------------------------------------------------------- */
   const [anchorEl, setAnchorEl] = React.useState(null);
+  React.useEffect(() => {
+    return () => {
+      myAvatar
+    }
+  }, [myAvatar])
 
   /* -------------------------------------------------------------------------- */
   /*                                   method                                   */
@@ -97,7 +105,29 @@ const Header = () => {
             <Typography
               variant="button"
               className={`${classes.title}  text-black flex items-center justify-center`}>
-              {<MdAccountCircle size="25px" /> ?? <img src={userRedux.profile.foto} alt="" />} <RiArrowDownSLine size="20px" />
+              {
+                userRedux.profile.foto ?
+                <Image 
+                  className="rounded-full pointer-events-none"
+                  blurDataURL={myAvatar}
+                  placeholder="blur"
+                  src={myAvatar}
+                  width="40"
+                  height="40"
+                  layout="intrinsic"
+                  objectFit="cover"
+                />
+                :
+                <Image 
+                  className="rounded-full pointer-events-none"
+                  blurDataURL={Blank as any}
+                  placeholder="blur"
+                  src={Blank}
+                  width="40" height="40"
+                  objectFit="cover"
+                  layout="fixed" 
+                /> 
+              } <RiArrowDownSLine size="20px" />
             </Typography>
           </Button>
           <Menu
