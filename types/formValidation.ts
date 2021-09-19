@@ -10,4 +10,5 @@ export type IUserProfilValidation = {
   email: string;
   foto: string;
   gender: string;
+  role_name: any;
 }

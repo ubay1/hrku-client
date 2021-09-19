@@ -17,7 +17,7 @@ a {
 }
 
 .comp_dialog {
-  min-width: 320px;
+  min-width: 0px;
 }
 
 .bg-loading {
@@ -162,7 +162,7 @@ a {
   }
 }
 
-@media screen and (max-width: 767.8px) {
+@media screen and (min-width: 576px) and (max-width: 767.8px) {
   .profil {
     // height: 100vh;
     .card {
@@ -170,6 +170,22 @@ a {
       .detailuser {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
+        row-gap: 30px;
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 0px) and (max-width: 575.8px) {
+  .profil {
+    // height: 100vh;
+    .card {
+      width: 95% !important;
+      .detailuser {
+        display: grid !important;
+        grid-template-columns: repeat(1, 1fr) !important;
         row-gap: 30px;
         padding-left: 20px;
         padding-right: 20px;

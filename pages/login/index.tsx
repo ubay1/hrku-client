@@ -64,10 +64,9 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
   
   const router = useRouter()
   const msg = router.query.msg;
-
-
+  
   /* -------------------------------------------------------------------------- */
-  /*                                    state                                   */
+  /*                                  hooks                                     */
   /* -------------------------------------------------------------------------- */
   const [values, setValues] = React.useState({
     email: '',
@@ -80,9 +79,6 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
 
   const tokenCookies = Cookies.get('token')
 
-  /* -------------------------------------------------------------------------- */
-  /*                                  hooks                                     */
-  /* -------------------------------------------------------------------------- */
   useEffect(() => {
     // console.log(userRedux)
     if (tokenCookies === '' || tokenCookies === undefined) {
@@ -125,7 +121,6 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
   /* -------------------------------------------------------------------------- */
   /*                                 handle form                                */
   /* -------------------------------------------------------------------------- */
-  
   const { register, handleSubmit, watch, formState: { errors } } = useForm<ILoginValidation>();
   const onSubmits = (data: any) => {
     httpLoginUser(data)

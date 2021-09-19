@@ -47,6 +47,7 @@ const Header = () => {
   /*                                    state                                   */
   /* -------------------------------------------------------------------------- */
   const [anchorEl, setAnchorEl] = React.useState(null);
+  
   React.useEffect(() => {
     return () => {
       myAvatar
@@ -120,12 +121,11 @@ const Header = () => {
                 :
                 <Image 
                   className="rounded-full pointer-events-none"
-                  blurDataURL={Blank as any}
-                  placeholder="blur"
                   src={Blank}
-                  width="40" height="40"
+                  width="30" 
+                  height="30"
+                  layout="intrinsic"
                   objectFit="cover"
-                  layout="fixed" 
                 /> 
               } <RiArrowDownSLine size="20px" />
             </Typography>
