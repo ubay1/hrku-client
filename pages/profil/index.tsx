@@ -123,8 +123,7 @@ const ChildEditProfil = (props: {
   handleSubmit: any, 
   errors: any, 
   register: any,
-  handleClose: any, 
-  httpUpdateProfil: any,
+  handleClose: any,
   value: IDataUser,
   listRole: any,
   openRole: any,
@@ -144,13 +143,13 @@ const ChildEditProfil = (props: {
         className=""
       >
         <div className="mb-4">
-          <FormControl error={props.errors.fullname ? true : false}>
+          <FormControl error={props.errors.fullname ? true : false} className="w-full">
             <InputLabel htmlFor="standard-adornment-fullname">
               Nama Lengkap
             </InputLabel>
             <Input 
               placeholder="Masukan email"
-              className="w-56"
+              // className="w-56"
               defaultValue={props.value.data.fullname}
               {...props.register("fullname", { 
                 required: 'wajib diisi',
@@ -166,13 +165,13 @@ const ChildEditProfil = (props: {
         </div>
 
         <div className="mb-4">
-          <FormControl error={props.errors.address ? true : false}>
+          <FormControl error={props.errors.address ? true : false} className="w-full">
             <InputLabel htmlFor="standard-adornment-address">
               Alamat Lengkap
             </InputLabel>
             <Input 
               placeholder="Masukan email"
-              className="w-56"
+              // className="w-56"
               defaultValue={props.value.data.address}
               {...props.register("address", { 
                 required: 'wajib diisi',
@@ -188,13 +187,13 @@ const ChildEditProfil = (props: {
         </div>
 
         <div className="mb-4">
-          <FormControl error={props.errors.phone ? true : false}>
+          <FormControl error={props.errors.phone ? true : false} className="w-full">
             <InputLabel htmlFor="standard-adornment-phone">
               Nomor Telepon
             </InputLabel>
             <Input 
               placeholder="Masukan email"
-              className="w-56"
+              // className="w-56"
               defaultValue={props.value.data.phone}
               {...props.register("phone", { 
                 required: 'wajib diisi',
@@ -206,39 +205,6 @@ const ChildEditProfil = (props: {
               }
             />
             <FormHelperText>{props.errors.phone && props.errors.phone.message}</FormHelperText>
-          </FormControl>
-        </div>
-
-        <div className="mb-4">
-          <FormControl error={props.errors.role_name ? true : false} className="w-full">
-            <InputLabel id="demo-controlled-open-select-role_name">Role</InputLabel>
-            <Select
-              labelId="demo-controlled-open-select-role_name"
-              id="demo-controlled-open-select"
-              open={props.openRole}
-              onClose={props.handleCloseRole}
-              onOpen={props.handleOpenRole}
-              onChange={props.handleChangeRole}
-              placeholder="Role"
-              defaultValue={props.value.data.role.id === null ? '' : props.value.data.role.id}
-              {...props.register("role_name", { 
-                required: 'wajib diisi',
-              })}
-              startAdornment={
-                <InputAdornment position="start">
-                  <RiAwardFill color="#000" size="20"/>
-                </InputAdornment>
-              }
-            >
-              <MenuItem value="" disabled>Role</MenuItem>
-              {
-                props.listRole.map((item: any) => {
-                  return(
-                    <MenuItem value={item.id}>{item.role_name}</MenuItem>
-                  )
-                })
-              }
-            </Select>
           </FormControl>
         </div>
 
@@ -284,7 +250,6 @@ const ChildEditProfil = (props: {
           <div>
             <Button 
               size="small" 
-              onClick={props.httpUpdateProfil} 
               color="primary" 
               variant="contained"
               type="submit"
@@ -380,6 +345,7 @@ const Profil = ({data}: IDataUser) => {
         },
       }
     })
+
     return () => {
       data
     }
@@ -387,6 +353,9 @@ const Profil = ({data}: IDataUser) => {
 
   useEffect(() => {
     httpGetAllRole()
+    return()=>{
+      setlistRole([])
+    }
   }, [])
 
   // role
@@ -428,9 +397,13 @@ const Profil = ({data}: IDataUser) => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm<IUserProfilValidation>();
   const onSubmits = (data: any) => {
     // httpUpdateProfil()
-    console.log('nyangkut update profil')
-    console.log(data)
+    // console.log('nyangkut update profil')
+    // console.log(data)
+    
+    httpUpdateProfil(data)
   };
+
+  const lengthObject = Object.keys(errors)
   // console.log(errors)
   
   /* -------------------------------------------------------------------------- */
@@ -461,7 +434,7 @@ const Profil = ({data}: IDataUser) => {
     try {
       const response = await HTTPGetAllRole();
       setlistRole(response.data.data)
-      console.log(response)
+      // console.log(response)
     } catch (error) {
       const errors = parseError(error)
       console.log(errors)
@@ -568,22 +541,54 @@ const Profil = ({data}: IDataUser) => {
     }
   }
 
-  const httpUpdateProfil = async () => {
+  const httpUpdateProfil = async (data: any) => {
     setLoadingSubmit(true)
+    setDisableBtnSubmit(true)
+    setDisableBtnCancel(true)
 
     try {
-      // const response = await HTTPUpdateProfil({
-      //   token: userRedux.token,
-      //   fullname: dataUser.data.fullname,
-      //   address: dataUser.data.address,
-      //   phone: dataUser.data.phone,
-      //   gender: dataUser.data.gender,
-      //   roleId: 
-      // })
+      const response = await HTTPUpdateProfil({
+        token: userRedux.token,
+        fullname: data.fullname,
+        address: data.address,
+        phone: data.phone,
+        gender: data.gender,
+      })
+
+      setLoadingSubmit(false)
+      setDisableBtnSubmit(false)
+      setDisableBtnCancel(false)
+
+      dispatch(setReduxUsersProfile({
+        fullname: data.fullname,
+        address: data.address,
+        phone: data.phone,
+        gender: data.gender,
+        email: userRedux.profile.email,
+        role_name: userRedux.profile.role_name,
+        slug_role_name: userRedux.profile.slug_role_name,
+        foto: userRedux.profile.foto
+      }))
+      handleClose()
+      
     } catch (error) {
       const errors = JSON.parse(JSON.stringify(error))
       console.log(errors)
+      
       setLoadingSubmit(false)
+      setDisableBtnSubmit(false)
+      setDisableBtnCancel(false)
+      handleClose()
+
+      toast('gagal update profil', {
+        position: "bottom-right",
+        autoClose: 5000,
+        type: 'success',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        transition: Slide
+      })
     }
   }
   
@@ -602,7 +607,7 @@ const Profil = ({data}: IDataUser) => {
               <div className="bg-foto-backdrop"></div>
               <div className="foto mt-4 relative">
                 {
-                  dataUser.data.foto ?
+                  userRedux.profile.foto ?
                   <Image 
                     className="rounded-full pointer-events-none"
                     blurDataURL={myAvatar}
@@ -636,9 +641,9 @@ const Profil = ({data}: IDataUser) => {
                 <RiPencilLine color="red" size="20px"/>
               </div>
               <div className="role relative flex flex-col items-center justify-center">
-                <div className="fullname text-lg text-white font-bold">{dataUser.data.fullname}</div>
+                <div className="fullname text-lg text-white font-bold">{userRedux.profile.fullname}</div>
                 <div className="rolename bg-red-500 px-2 rounded-md text-white">
-                  {dataUser.data.role.role_name}
+                  {userRedux.profile.role_name}
                 </div>
               </div>
             </div>
@@ -649,7 +654,7 @@ const Profil = ({data}: IDataUser) => {
                   <RiMailLine color="red" size="20px"/>
                 </div>
                 <div className="text-center">
-                  {dataUser.data.email}
+                  {userRedux.profile.email}
                 </div>
               </div>
               <div className="phone flex flex-col text-sm justify-center items-center">
@@ -657,7 +662,7 @@ const Profil = ({data}: IDataUser) => {
                   <RiPhoneLine color="green" size="20px"/>
                 </div>
                 <div className="text-center">
-                  {dataUser.data.phone}
+                  {userRedux.profile.phone}
                 </div>
               </div>
               <div className="address flex flex-col text-sm justify-center items-center">
@@ -665,23 +670,23 @@ const Profil = ({data}: IDataUser) => {
                   <RiMapPin2Line color="blue" size="20px"/>
                 </div>
                 <div className="text-center">
-                  {dataUser.data.address}
+                  {userRedux.profile.address}
                 </div>
               </div>
               <div className="gender flex flex-col text-sm justify-center items-center">
                 <div className="bg-yellow-50 p-2 rounded-full">
-                  { dataUser.data.gender === null ? <RiQuestionLine color="orange" size="20px"/> : 
-                    dataUser.data.gender === 'P' ? <RiWomenLine color="orange" size="20px"/> :
+                  { userRedux.profile.gender === null ? <RiQuestionLine color="orange" size="20px"/> : 
+                    userRedux.profile.gender === 'P' ? <RiWomenLine color="orange" size="20px"/> :
                     <RiMenLine color="orange" size="20px"/>
                   }
                 </div>
-                {dataUser.data.gender === null ? 'unknown' : dataUser.data.gender === 'P' ? 'Perempuan' : 'Pria'}
+                {userRedux.profile.gender === null ? 'unknown' : userRedux.profile.gender === 'P' ? 'Perempuan' : 'Pria'}
               </div>
             </div>
           </div>
         </div>
         
-        {/* dialog update foto profil */}
+        {/* dialog update profil */}
         <DialogMigrate
           open={openEditFoto ? openEditFoto : openEditProfil}
           disableEscapeKeyDown
@@ -710,7 +715,6 @@ const Profil = ({data}: IDataUser) => {
                 errors={errors} 
                 register={register}
                 handleClose={handleClose}
-                httpUpdateProfil={httpUpdateProfil}
                 value={dataUser}
                 listRole={listRole}
                 handleChangeRole={handleChangeRole}
@@ -742,9 +746,20 @@ export async function getServerSideProps(context: any) {
         }
       }
     } else {
-      const replaceToken = context.req.headers.cookie.replace('token=', '')
-      console.log('token ada = ',replaceToken)
-      const response = await HTTPGetProfil({token: replaceToken})
+      let replaceToken = ''
+      const a = JSON.parse(JSON.stringify(context.req.headers.cookie))
+      let splitt = a.split(" ");
+
+      // console.log('token ada = ',splitt)
+
+      for (var j = 0; j < splitt.length; j++) {
+        if (splitt[j].match('token')) {
+          console.log('token ada = ', splitt[j])
+          const replaceToken2 = splitt[j].replace('token=','');
+          replaceToken = replaceToken2;
+        }
+      }
+      const response = await HTTPGetProfil({ token: replaceToken})
       console.log(response.data)
       const data = response.data.data
       return {

@@ -7,7 +7,7 @@ import { AppDispatch } from '../store';
 import { RootState } from '../store/rootReducer';
 import { setLoadingShow } from '../store/loading';
 import Lottie from 'lottie-react';
-import LoadingAction from '../assets/lottie_file/loading.json';
+import LoadingAction from '../assets/lottie_file/loading-searching.json';
 import { NextSeo } from 'next-seo';
 
 const Loading = () => {

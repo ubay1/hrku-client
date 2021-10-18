@@ -6,7 +6,6 @@ interface IUpdateProfil {
   address: string;
   phone: string;
   gender: string;
-  roleId: string;
 }
 
 const SERVER_URL = process.env.SERVER_URL
@@ -42,7 +41,6 @@ export async function HTTPUpdateProfil(param: IUpdateProfil): Promise<any> {
         address: param.address,
         phone: param.phone,
         gender: param.gender,
-        roleId: param.roleId,
       })
       return resolve(response)
     } catch (error) {

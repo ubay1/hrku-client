@@ -53,11 +53,11 @@ export function AxiosNormal<AxiosInstance>(token?: string ) {
         // console.log(error.response)
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
-        if (error.response.status === 403) {
-          Cookies2.remove('gwt')
-          window.location.replace('/login?msgerr=token_expired')
-          return Promise.reject(error)
-        }
+        // if (error.response.status === 403) {
+        //   Cookies2.remove('gwt')
+        //   window.location.replace('/login?msgerr=token_expired')
+        //   return Promise.reject(error)
+        // }
 
         // if unauthorized
         if (error.response.status === 401) {
@@ -65,9 +65,9 @@ export function AxiosNormal<AxiosInstance>(token?: string ) {
         }
 
         if (error.response.data !== '') {
-          return Promise.reject(error.response.data + ' || code:' + error.response.status)
+          return Promise.reject(error.response)
         } else {
-          return Promise.reject(error.response.status)
+          return Promise.reject(error.response)
         }
       } else if (error.request) {
         // The request was made but no response was received

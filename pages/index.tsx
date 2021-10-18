@@ -5,7 +5,7 @@ import { Base } from '../layout/base';
 import { Card, CardActionArea, CardMedia, CardContent, Typography, CardActions, Button, makeStyles, Menu, MenuItem, Grid, Paper } from '@material-ui/core';
 import Image from 'next/image'
 import { MdAccountCircle, MdPerson } from 'react-icons/md';
-import { RiArrowDownSLine, RiLogoutBoxRLine, RiTeamFill, RiParentLine, RiMoneyDollarBoxLine, RiUserVoiceLine, RiSuitcase2Line, RiCopyrightLine } from 'react-icons/ri';
+import { RiArrowDownSLine, RiLogoutBoxRLine, RiTeamFill, RiParentLine, RiMoneyDollarBoxLine, RiLuggageCartLine, RiSuitcase2Line, RiCopyrightLine } from 'react-icons/ri';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch } from '../store';
 import { RootState } from '../store/rootReducer';
@@ -20,7 +20,7 @@ const dataProduct = [
   title: 'kelola karyawan'},
   {icon: <div className="bg-green-50 p-2 rounded-full"><RiMoneyDollarBoxLine size="30px" color="green"/></div>, 
   title: 'kelola penggajian'},
-  {icon: <div className="bg-blue-50 p-2 rounded-full"><RiUserVoiceLine size="30px" color="blue"/></div>, 
+  {icon: <div className="bg-blue-50 p-2 rounded-full"><RiLuggageCartLine size="30px" color="blue"/></div>, 
   title: 'cuti karyawan'},
   {icon: <div className="bg-yellow-50 p-2 rounded-full"><RiSuitcase2Line size="30px" color="orange"/></div>, 
   title: 'buat lowongan'},

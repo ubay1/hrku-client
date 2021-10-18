@@ -10,7 +10,7 @@ import { AppDispatch } from "../store";
 import { initialStateUserAuthByAsync } from "../store/user";
 import { setLoading } from "../store/loading";
 import Lottie from "lottie-react";
-import LoadingScreen from '../assets/lottie_file/loading-book.json';
+import LoadingScreen from '../assets/lottie_file/loading-searching.json';
 import Cookies from "js-cookie";
 import router from "next/router";
 import { NextSeo } from "next-seo";
@@ -55,11 +55,13 @@ export const Base: React.FC = ({children}, page) => {
     if (tokenCookies === '' || tokenCookies === undefined) {
       router.push('/login')
     } else {
-      if (userRedux.token !== '') {
-        dispatch(setLoading({show: false}))
-      } else {
-        initialStateUserAuthByAsync(dispatch)
-      }
+      setTimeout(() => {
+        if (userRedux.token !== '') {
+          dispatch(setLoading({show: false}))
+        } else {
+          initialStateUserAuthByAsync(dispatch)
+        }
+      }, 1000);
     }
   }, [dispatch, userRedux.token])
 

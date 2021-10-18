@@ -1,5 +1,9 @@
-import { Dialog } from '@material-ui/core';
+import { Dialog, Grow, Slide, Zoom } from '@material-ui/core';
 import React from 'react'
+
+const Transition = React.forwardRef(function Transition(props: any, ref: any) {
+  return <Zoom  ref={ref} {...props} />;
+});
 
 const DialogMigrate: any = ({
   children,
@@ -24,7 +28,7 @@ const DialogMigrate: any = ({
   };
 
   return (
-    <Dialog onClose={handleClose} {...rest} className="comp_dialog">
+    <Dialog onClose={handleClose} {...rest} className="comp_dialog" maxWidth="xs" fullWidth={true} TransitionComponent={Transition} >
       {children}
     </Dialog>
   );
