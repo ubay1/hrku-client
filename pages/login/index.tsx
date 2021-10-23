@@ -75,7 +75,8 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
   });
   const [loadingSubmit, setLoadingSubmit] = React.useState(false);
   const [disableBtnLogin, setDisableBtnLogin] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
+  
+  const [openModalForgotPassword, setOpenModalForgotPassword] = React.useState(false);
 
   const tokenCookies = Cookies.get('token')
 
@@ -205,11 +206,11 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
   }
 
   const handleClickOpen = () => {
-    setOpen(true);
+    setOpenModalForgotPassword(true);
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setOpenModalForgotPassword(false);
   };
 
   const handleClickShowPassword = () => {
@@ -317,7 +318,7 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
                   {loadingSubmit && <CircularProgress size={24} className={classes.buttonProgress} />}
                 </div>
                 
-                <div className="mt-2 cursor-pointer"
+                <div className="mt-2 cursor-pointer text-blue-500"
                   onClick={handleClickOpen}
                 >
                   Lupa Password ?
@@ -327,8 +328,9 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
             </CardContent>
           </Card>
         </div>
+        
         <DialogMigrate
-          open={open}
+          open={openModalForgotPassword}
           disableEscapeKeyDown
           disableBackdropClick
           onClose={handleClose}
@@ -336,13 +338,13 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
           <div className="m-5">
             <div className="text-lg">Lupa Password</div>
             <div className="mb-8 mt-6">
-              <FormControl>
+              <FormControl className="w-full">
                 <InputLabel htmlFor="standard-adornment-email">
                   Email
                 </InputLabel>
                 <Input 
                   placeholder="Masukan email"
-                  className="w-56"
+                  className=""
                   {...register("email", { 
                     required: 'wajib diisi',
                     pattern: {

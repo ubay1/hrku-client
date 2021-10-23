@@ -16,10 +16,6 @@ a {
   box-sizing: border-box;
 }
 
-.comp_dialog {
-  // min-width: 0px;
-}
-
 .bg-loading {
   background-color: white !important;
 }
@@ -31,6 +27,18 @@ a {
 
 .hide_btn_crop {
   display: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   header                                   */
+/* -------------------------------------------------------------------------- */
+.header {
+  .foto {
+    &:hover {
+      background-color: aliceblue;
+      border-radius: 10px;
+    }
+  }
 }
 /* -------------------------------------------------------------------------- */
 /*                                    login                                   */
@@ -78,6 +86,16 @@ a {
     // font-family: 'DM Serif Display', serif;
     // text-shadow: 3px 3px 5px #dbd6d6;
     font-weight: 600;
+    
+    &::selection {
+      background-color: aliceblue;
+    }
+
+    &-name {
+      &::selection {
+        background-color: aliceblue;
+      }
+    }
   }
   .body {
     display: grid;
@@ -97,6 +115,10 @@ a {
       }
       .title {
         font-family: 'Roboto', sans-serif;
+
+        &::selection {
+          background-color: aliceblue;
+        }
       }
     }
   }

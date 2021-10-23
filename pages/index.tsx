@@ -42,7 +42,7 @@ const Home: NextPage = () => {
         {/* greeting */}
         <div className="greeting mx-4 mt-2 text-center phone:text-4xl xphone:text-3xl">
           Hi, Selamat Datang 
-          <span className="font-bold text-red-300"> {userRedux.profile.fullname}</span>
+          <span className="font-bold text-red-300 greeting-name"> {userRedux.profile.fullname}</span>
         </div>
 
         {/* body */}
