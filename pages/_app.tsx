@@ -8,12 +8,13 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import React from 'react';
 import theme from '../utils/theme';
 import Cookies from "js-cookie";
-import {store} from '../store'
+import {persistor, store} from '../store'
 import { Provider } from 'react-redux'
 import NProgress from "nprogress"
 import '../public/nprogress.css'
 import router from "next/router"
 import Head from "next/head"
+import { PersistGate } from 'redux-persist/integration/react';
 
 function MyApp({ Component, pageProps }: AppProps) {
   
@@ -46,6 +47,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   
   return (
     <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Head>
@@ -56,6 +58,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </Head>
         <Component {...pageProps} />
       </ThemeProvider>
+      </PersistGate>
     </Provider>
   );
 }

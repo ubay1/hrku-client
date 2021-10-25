@@ -1,16 +1,16 @@
 import { Card, CardContent, Typography, CardActions, Button, makeStyles, Container, TextField, Grid, IconButton, InputAdornment, Input, InputLabel, FormControl, Link, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormHelperText, CircularProgress } from '@material-ui/core'
 import { NextSeo } from 'next-seo';
 import Image from 'next/image'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import theme from '../../utils/theme';
-import { RiEyeCloseLine, RiEyeLine, RiLock2Line, RiMailLine } from "react-icons/ri";
+import { RiEyeCloseLine, RiEyeLine, RiLock2Line, RiMailLine, RiShieldKeyholeFill } from "react-icons/ri";
 import Logo from "../../assets/images/hrlogo.png";
 import DialogMigrate from '../../components/Dialog';
 import { blue, red } from '@material-ui/core/colors';
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
-import { useRouter } from 'next/router'
+import { Router, useRouter } from 'next/router'
 import { Slide, toast } from 'react-toastify';
-import { HTTPSubmitLogin } from '../../api/auth';
+import { HTTPForgotPassword, HTTPSubmitLogin, HTTPVerifOtp } from '../../api/auth';
 import { HTTPGetProfil } from '../../api/user';
 import Cookies from "js-cookie";
 import { initialStateUserAuthByAsync, setAuthStatus, setReduxUsersProfile } from '../../store/user';
@@ -23,7 +23,7 @@ import HrdLottie from '../../assets/lottie_file/hrd.json';
 import { setLoading } from '../../store/loading';
 import ImageLogin from '../../assets/images/bg_login.webp'
 import { useForm } from "react-hook-form";
-import { ILoginValidation } from '../../types/formValidation';
+import { IForgotPwdValidation, ILoginValidation, IResetPwdValidation, IVerifOtpValidation } from '../../types/formValidation';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -38,29 +38,19 @@ const useStyles = makeStyles({
     marginTop: -12,
     marginLeft: -12,
   },
+  colorPrimary: {
+    color: blue[500]
+  }
 });
 
-export const getStaticProps: GetStaticProps = async () => {
-  const res = await fetch('https://api.github.com/repos/vercel/next.js')
-  const data: any = await res.json()
 
-  if (!data) {
-    return {
-      notFound: true,
-    }
-  }
-  
-  console.log(data.name)
-  return { props: {ninjas: data }}
-}
-
-const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Login = () => {
   toast.configure()
   const classes = useStyles();
   
+  const dispatch: AppDispatch = useDispatch()
   const loading = useSelector((state: RootState) => state.loading);
   const userRedux = useSelector((state: RootState) => state.user);
-  const dispatch: AppDispatch = useDispatch()
   
   const router = useRouter()
   const msg = router.query.msg;
@@ -75,8 +65,18 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
   });
   const [loadingSubmit, setLoadingSubmit] = React.useState(false);
   const [disableBtnLogin, setDisableBtnLogin] = React.useState(false);
+  const [loadingSubmitForgotPwd, setLoadingSubmitForgotPwd] = React.useState(false);
+  const [disableBtnForgotPwd, setDisableBtnForgotPwd] = React.useState(false);
+  const [loadingSubmitVerifOtp, setLoadingSubmitVerifOtp] = React.useState(false);
+  const [disableBtnVerifOtp, setDisableBtnVerifOtp] = React.useState(false);
+  const [loadingSubmitResetPwd, setLoadingSubmitResetPwd] = React.useState(false);
+  const [disableBtnResetPwd, setDisableBtnResetPwd] = React.useState(false);
   
   const [openModalForgotPassword, setOpenModalForgotPassword] = React.useState(false);
+  const [openModalVerifOtp, setOpenModalVerifOtp] = React.useState(false);
+  const [openModalResetPwd, setOpenModalResetPwd] = React.useState(false);
+
+  const [saveEmailForgotPwd, setsaveEmailForgotPwd] = useState('')
 
   const tokenCookies = Cookies.get('token')
 
@@ -122,9 +122,25 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
   /* -------------------------------------------------------------------------- */
   /*                                 handle form                                */
   /* -------------------------------------------------------------------------- */
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<ILoginValidation>();
-  const onSubmits = (data: any) => {
+  const { register, handleSubmit, formState: { errors } } = useForm<ILoginValidation>();
+  const onSubmits = (data: ILoginValidation) => {
     httpLoginUser(data)
+  };
+  
+  const { register: registerForgotPwd, handleSubmit: handleSubmitForgotPwd, reset, formState: { errors: errorsForgotPwd } } = useForm<IForgotPwdValidation>();
+  const submitForgotPwd = ({email}: IForgotPwdValidation) => {
+    htttpForgotPassword({email: email})
+  };
+
+  const { register: registerVerifOtp, handleSubmit: handleSubmitVerifOtp, reset: resetVerifOtp, formState: { errors: errorsVerifOtp } } = useForm<IVerifOtpValidation>();
+  const submitVerifOtp = ({ otp }: IVerifOtpValidation) => {
+    htttpVerifOtp({otp: otp})
+  };
+
+  const { register: registerResetPwd, handleSubmit: handleSubmitResetPwd, reset: resetResetPwd, formState: { errors: errorsResetPwd } } = useForm<IResetPwdValidation>();
+  const submitResetPwd = ({ new_password, new_password_confirm }: IResetPwdValidation) => {
+    // htttpResetPwd({ otp: otp })
+    console.log(new_password, new_password_confirm)
   };
 
   /* -------------------------------------------------------------------------- */
@@ -202,6 +218,86 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
       }
       setLoadingSubmit(false)
       setDisableBtnLogin(false)
+    }
+  }
+
+  const htttpForgotPassword = async (params: {email: string}) => {
+    setLoadingSubmitForgotPwd(true)
+    setDisableBtnForgotPwd(true)
+
+    try {
+      const response = await HTTPForgotPassword({
+        email: params.email,
+      })
+
+      console.log('resposne forgot pwd = ', response)
+
+      toast('kode otp telah dikirim ke email', {
+        position: "bottom-right",
+        autoClose: 5000,
+        type: 'success',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        transition: Slide
+      })
+
+      reset(response)
+
+      setsaveEmailForgotPwd(params.email)
+      setLoadingSubmitForgotPwd(false)
+      setDisableBtnForgotPwd(false)
+      setOpenModalForgotPassword(false)
+      setOpenModalVerifOtp(true)
+    } catch (error) {
+      console.log(error)
+      setLoadingSubmitForgotPwd(false)
+      setDisableBtnForgotPwd(false)
+    }
+  } 
+
+  const htttpVerifOtp = async (params: { otp: string }) => {
+    setLoadingSubmitVerifOtp(true)
+    setDisableBtnVerifOtp(true)
+
+    try {
+      const response = await HTTPVerifOtp({
+        email: saveEmailForgotPwd,
+        otp: params.otp,
+      })
+
+      console.log('resposne verif otp = ', response)
+
+      toast('kode otp telah dikirim ke email', {
+        position: "bottom-right",
+        autoClose: 5000,
+        type: 'success',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        transition: Slide
+      })
+
+      reset(response)
+      // setLoadingSubmitVerifOtp(false)
+      // setDisableBtnVerifOtp(false)
+      // setOpenModalVerifOtp(true)
+    } catch (error) {
+      const errorOtp = JSON.parse(JSON.stringify(error))
+      console.log(errorOtp.data.message)
+
+      setLoadingSubmitVerifOtp(false)
+      setDisableBtnVerifOtp(false)
+
+      toast(errorOtp.data.message, {
+        position: "bottom-right",
+        autoClose: 5000,
+        type: 'error',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        transition: Slide
+      })
     }
   }
 
@@ -318,8 +414,10 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
                   {loadingSubmit && <CircularProgress size={24} className={classes.buttonProgress} />}
                 </div>
                 
-                <div className="mt-2 cursor-pointer text-blue-500"
-                  onClick={handleClickOpen}
+                <div className={`mt-2 cursor-pointer ${classes.colorPrimary}`}
+                  onClick={() => {
+                    router.push('/forgot_password')
+                  }}
                 >
                   Lupa Password ?
                 </div>
@@ -329,51 +427,224 @@ const Login = ({ninjas}: InferGetStaticPropsType<typeof getStaticProps>) => {
           </Card>
         </div>
         
-        <DialogMigrate
+        {/* dialog forgot PWD */}
+        {/* <DialogMigrate
           open={openModalForgotPassword}
           disableEscapeKeyDown
           disableBackdropClick
           onClose={handleClose}
         >
-          <div className="m-5">
-            <div className="text-lg">Lupa Password</div>
-            <div className="mb-8 mt-6">
-              <FormControl className="w-full">
-                <InputLabel htmlFor="standard-adornment-email">
-                  Email
-                </InputLabel>
-                <Input 
-                  placeholder="Masukan email"
-                  className=""
-                  {...register("email", { 
-                    required: 'wajib diisi',
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                      message: "format e-mail tidak sesuai",
-                    },
-                  })}
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <RiMailLine color="#000" size="20"/>
-                    </InputAdornment>
-                  }
-                />
-              </FormControl>
-            </div>
-            <div className="flex justify-end">
-              <div className="mr-2">
-                <Button size="small" onClick={handleClose} color="secondary" variant="outlined">
-                  Batal
-                </Button>
+          <form 
+            onSubmit={handleSubmitForgotPwd(submitForgotPwd)}
+            autoComplete="on"
+            className=""
+          >
+            <div className="m-5">
+              <div className="text-lg">Lupa Password</div>
+              <div className="mb-8 mt-6">
+                <FormControl className="w-full" error={errorsForgotPwd.email ? true : false}>
+                  <InputLabel htmlFor="standard-adornment-email">
+                    Email
+                  </InputLabel>
+                  <Input 
+                    placeholder="Masukan email"
+                    className=""
+                    {...registerForgotPwd("email", { 
+                      required: 'wajib diisi',
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                        message: "format e-mail tidak sesuai",
+                      },
+                    })}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <RiMailLine color="#000" size="20"/>
+                      </InputAdornment>
+                    }
+                  />
+                  <FormHelperText>{errorsForgotPwd.email && errorsForgotPwd.email.message}</FormHelperText>
+                </FormControl>
               </div>
-              <div>
-                <Button size="small" onClick={handleClose} color="primary" variant="contained" autoFocus>
-                  Kirim
-                </Button>
+              <div className="flex justify-end">
+                <div className="mr-2 relative">
+                  <Button 
+                    size="small" 
+                    onClick={handleClose} 
+                    color="secondary" 
+                    variant="outlined"
+                    disabled={disableBtnForgotPwd}
+                  >
+                    Batal
+                  </Button>
+                </div>
+                <div className="relative">
+                  <Button 
+                    size="small" 
+                    color="primary" 
+                    variant="contained" 
+                    disabled={disableBtnForgotPwd}
+                    autoFocus
+                    type="submit"
+                  >
+                    Kirim
+                  </Button>
+                  {loadingSubmitForgotPwd && <CircularProgress size={24} className={classes.buttonProgress} />}
+                </div>
               </div>
             </div>
-          </div>
-        </DialogMigrate>
+          </form>
+        </DialogMigrate> */}
+
+        {/* dialog otp */}
+        {/* <DialogMigrate
+          open={openModalVerifOtp}
+          disableEscapeKeyDown
+          disableBackdropClick
+          onClose={setOpenModalVerifOtp(false)}
+        >
+          <form
+            onSubmit={handleSubmitVerifOtp(submitVerifOtp)}
+            autoComplete="on"
+            className=""
+          >
+            <div className="m-5">
+              <div className="text-lg">Masukan Kode OTP</div>
+              <div className="mb-8 mt-6">
+                <FormControl className="w-full" error={errorsVerifOtp.otp ? true : false}>
+                  <InputLabel htmlFor="standard-adornment-otp">
+                    OTP
+                  </InputLabel>
+                  <Input
+                    placeholder="Masukan kode OTP"
+                    className=""
+                    {...registerVerifOtp("otp", {
+                      required: 'wajib diisi',
+                    })}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <RiShieldKeyholeFill color="#000" size="20" />
+                      </InputAdornment>
+                    }
+                  />
+                  <FormHelperText>{errorsVerifOtp.otp && errorsVerifOtp.otp.message}</FormHelperText>
+                </FormControl>
+              </div>
+              <div className="flex justify-end">
+                <div className="mr-2 relative">
+                  <Button
+                    size="small"
+                    onClick={() => {setOpenModalVerifOtp(false)}}
+                    color="secondary"
+                    variant="outlined"
+                    disabled={disableBtnVerifOtp}
+                  >
+                    Batal
+                  </Button>
+                </div>
+                <div className="relative">
+                  <Button
+                    size="small"
+                    color="primary"
+                    variant="contained"
+                    disabled={disableBtnVerifOtp}
+                    autoFocus
+                    type="submit"
+                  >
+                    Kirim
+                  </Button>
+                  {loadingSubmitVerifOtp && <CircularProgress size={24} className={classes.buttonProgress} />}
+                </div>
+              </div>
+            </div>
+          </form>
+        </DialogMigrate> */}
+
+        {/* dialog reset password */}
+        {/* <DialogMigrate
+          open={openModalResetPwd}
+          disableEscapeKeyDown
+          disableBackdropClick
+          onClose={setOpenModalResetPwd(false)}
+        >
+          <form
+            onSubmit={handleSubmitResetPwd(submitResetPwd)}
+            autoComplete="on"
+            className=""
+          >
+            <div className="m-5">
+              <div className="text-lg">Password Baru</div>
+              <div className="mb-8 mt-6">
+                <FormControl className="w-full" error={errorsResetPwd.new_password ? true : false}>
+                  <InputLabel htmlFor="standard-adornment-new_password">
+                    Password Baru
+                  </InputLabel>
+                  <Input
+                    placeholder="Masukan Password baru"
+                    className=""
+                    {...registerResetPwd("new_password", {
+                      required: 'wajib diisi',
+                    })}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <RiShieldKeyholeFill color="#000" size="20" />
+                      </InputAdornment>
+                    }
+                  />
+                  <FormHelperText>{errorsResetPwd.new_password && errorsResetPwd.new_password.message}</FormHelperText>
+                </FormControl>
+              </div>
+
+              <div className="text-lg">Konfirmasi Password Baru</div>
+              <div className="mb-8 mt-6">
+                <FormControl className="w-full" error={errorsResetPwd.new_password_confirm ? true : false}>
+                  <InputLabel htmlFor="standard-adornment-new_password_confirm">
+                    Konfirmasi Password Baru
+                  </InputLabel>
+                  <Input
+                    placeholder="Masukan Konfirmasi Password baru"
+                    className=""
+                    {...registerResetPwd("new_password_confirm", {
+                      required: 'wajib diisi',
+                    })}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <RiShieldKeyholeFill color="#000" size="20" />
+                      </InputAdornment>
+                    }
+                  />
+                  <FormHelperText>{errorsResetPwd.new_password_confirm && errorsResetPwd.new_password_confirm.message}</FormHelperText>
+                </FormControl>
+              </div>
+              
+              <div className="flex justify-end">
+                <div className="mr-2 relative">
+                  <Button
+                    size="small"
+                    onClick={() => { setOpenModalResetPwd(false) }}
+                    color="secondary"
+                    variant="outlined"
+                    disabled={disableBtnResetPwd}
+                  >
+                    Batal
+                  </Button>
+                </div>
+                <div className="relative">
+                  <Button
+                    size="small"
+                    color="primary"
+                    variant="contained"
+                    disabled={disableBtnResetPwd}
+                    autoFocus
+                    type="submit"
+                  >
+                    Kirim
+                  </Button>
+                  {loadingSubmitResetPwd && <CircularProgress size={24} className={classes.buttonProgress} />}
+                </div>
+              </div>
+            </div>
+          </form>
+        </DialogMigrate> */}
       </div>
     )
   }

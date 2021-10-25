@@ -265,9 +265,9 @@ const ChildEditProfil = (props: {
 
 const Profil = ({data}: IDataUser) => {
   toast.configure()
+  const dispatch: AppDispatch = useDispatch()
   const loading = useSelector((state: RootState) => state.loading);
   const userRedux = useSelector((state: RootState) => state.user);
-  const dispatch: AppDispatch = useDispatch()
 
   const myAvatar = process.env.PHOTO_URL+(userRedux.profile.foto as any)+'?'+moment()
   
