@@ -15,15 +15,19 @@ const forgotPwdSlice = createSlice({
   name: 'forgotPwd',
   initialState,
   reducers: {
-    setOtp(state, action: PayloadAction<ForgotPwdState>) {
+    setForgotPwdOtp(state, action: PayloadAction<{otp: boolean}>) {
       state.otp = action.payload.otp
     },
-    setEmail(state, action: PayloadAction<ForgotPwdState>) {
+    setForgotPwdEmail(state, action: PayloadAction<{email: string}>) {
       state.email = action.payload.email
+    },
+    setForgotPwdReset(state, action: PayloadAction<ForgotPwdState>) {
+      state.email = action.payload.email,
+      state.otp = action.payload.otp
     },
   },
 });
 
 // Actions
-export const { setOtp, setEmail } = forgotPwdSlice.actions
+export const { setForgotPwdOtp, setForgotPwdEmail, setForgotPwdReset } = forgotPwdSlice.actions
 export default forgotPwdSlice.reducer

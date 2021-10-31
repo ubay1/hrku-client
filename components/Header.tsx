@@ -12,6 +12,8 @@ import { RootState } from '../store/rootReducer';
 import Logo from "../assets/images/hrlogo.png";
 import Blank from "../assets/images/blank.png";
 import moment from 'moment';
+import { setAuthFalse, setReduxUsersProfile } from '../store/user';
+import { Slide, toast } from 'react-toastify';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -33,19 +35,17 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = () => {
   
+  toast.configure()
+  /* -------------------------------------------------------------------------- */
+  /*                                 hooks                                      */
+  /* -------------------------------------------------------------------------- */
   const classes = useStyles()
-
-  /* -------------------------------------------------------------------------- */
-  /*                                 state redux                                */
-  /* -------------------------------------------------------------------------- */
   const loading = useSelector((state: RootState) => state.loading);
   const userRedux = useSelector((state: RootState) => state.user);
   const dispatch: AppDispatch = useDispatch()
   
   const myAvatar = process.env.PHOTO_URL+(userRedux.profile.foto as any)+'?'+moment()
-  /* -------------------------------------------------------------------------- */
-  /*                                    state                                   */
-  /* -------------------------------------------------------------------------- */
+  
   const [anchorEl, setAnchorEl] = React.useState(null);
   
   React.useEffect(() => {
@@ -78,8 +78,29 @@ const Header = () => {
       const response = await HTTPSubmitLogout({token: userRedux.token})
 
       if (response.status === 201) {
-        Cookies.remove('token')
-        window.location.replace('/login')
+        toast('anda telah keluar dari aplikasi', {
+          position: "bottom-right",
+          autoClose: 5000,
+          type: 'success',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          transition: Slide
+        })
+        dispatch(setAuthFalse({
+          token: ''
+        }))
+        dispatch(setReduxUsersProfile({
+          fullname: '',
+          address: '',
+          phone: '',
+          email: '',
+          role_name: '',
+          slug_role_name: '',
+          foto: '',
+          gender: '',
+        }))
+        // window.location.replace('/login')
       }
     } catch (error) {
       console.log(error)

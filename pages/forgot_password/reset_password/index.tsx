@@ -4,10 +4,14 @@ import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form';
 import { RiArrowLeftLine, RiKey2Line, RiShieldKeyholeLine } from 'react-icons/ri';
 import { Slide, toast } from 'react-toastify';
-import { HTTPForgotPassword, HTTPResetPwd } from '../../../api/auth';
+import { HTTPCheckResetPwdToken, HTTPForgotPassword, HTTPResetPwd } from '../../../api/auth';
 import { IResetPwdValidation } from '../../../types/formValidation';
 import Header from '../components/Header';
 import { useRouter } from 'next/router'
+import { AppDispatch, store } from '../../../store';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../store/rootReducer';
+import { setForgotPwdEmail, setForgotPwdReset } from '../../../store/forgotPwd';
 
 const useStyles = makeStyles({
   bgPrimary: {
@@ -28,6 +32,10 @@ const useStyles = makeStyles({
 
 const ResetPwdPage = () => {
   toast.configure()
+  const dispatch: AppDispatch = useDispatch()
+  const loadingRedux = useSelector((state: RootState) => state.loading);
+  const userRedux = useSelector((state: RootState) => state.user);
+  const forgotPwdRedux = useSelector((state: RootState) => state.forgotPwd);
   
   /* -------------------------------------------------------------------------- */
   /*                                   hooks                                    */
@@ -43,6 +51,7 @@ const ResetPwdPage = () => {
     let mounted = true
     
     if (mounted) {
+      checkPwd()
     }
 
     return () => {
@@ -67,6 +76,7 @@ const ResetPwdPage = () => {
 
     try {
       const response = await HTTPResetPwd({
+        email: forgotPwdRedux.email,
         new_password: new_password,
         new_password_confirm: new_password_confirm
       })
@@ -87,14 +97,17 @@ const ResetPwdPage = () => {
 
       setLoadingSubmitResetPwd(false)
       setDisableBtnResetPwd(false)
+      dispatch(setForgotPwdReset({ email: '', otp: false }))
+      router.push('/login')
+      
     } catch (error) {
-      const errorOtp = JSON.parse(JSON.stringify(error))
-      console.log(errorOtp.data.message)
+      const errors = JSON.parse(JSON.stringify(error))
+      // console.log(errors.data.message)
 
       setLoadingSubmitResetPwd(false)
       setDisableBtnResetPwd(false)
 
-      toast(errorOtp.data.message, {
+      toast(errors.data.message, {
         position: "bottom-right",
         autoClose: 5000,
         type: 'error',
@@ -106,13 +119,29 @@ const ResetPwdPage = () => {
     }
   }
 
+  const checkPwd = async () => {
+    try {
+      const response = await HTTPCheckResetPwdToken({ email: forgotPwdRedux.email })
+      // console.log(response)
+      // const data = response.data.data
+    } catch (error) {
+      // console.log(error)
+      dispatch(setForgotPwdReset({email: '', otp: false}))
+      alert('mohon maaf, anda tidak mendapatkan akses ke halaman ini')
+      router.back()
+    }
+  }
+
   /* -------------------------------------------------------------------------- */
   /*                                   show page                                */
   /* -------------------------------------------------------------------------- */
 
   return (
     <>
-      <Header title="Reset Password" />
+      <Header 
+        step={3}
+        title="Reset Password" 
+      />
 
       <div className="mt-10 flex flex-col justify-center m-auto laptop:w-1/2 phone:w-4/5 xphone:w-11/12">
         <Card>
@@ -172,7 +201,6 @@ const ResetPwdPage = () => {
                       color="primary"
                       variant="contained"
                       disabled={disableBtnResetPwd}
-                      autoFocus
                       type="submit"
                       fullWidth={true}
                     >
@@ -192,12 +220,25 @@ const ResetPwdPage = () => {
 
 export default ResetPwdPage
 
-export async function getServerSideProps(context: any) {
-  console.log(context)
-
-  return{
-    props: {
-      data: 'testing'
-    },
-  }
-}
+// export async function getServerSideProps(context: any) {
+//   try {
+//     const dataUser = store.getState()
+//     const email = dataUser.forgotPwd.email
+//     console.log(email)
+//     const response = await HTTPCheckResetPwdToken({ email:  email})
+//     console.log(response)
+//       // const data = response.data.data
+//     return {
+//       props: {
+//         data: JSON.parse(JSON.stringify('ubay'))
+//       },
+//     }
+//   } catch (error) {
+//     console.log(error)
+//     return {
+//       props: {
+//         data: JSON.parse(JSON.stringify('error'))
+//       },
+//     }
+//   }
+// }

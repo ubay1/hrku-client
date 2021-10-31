@@ -759,13 +759,23 @@ export async function getServerSideProps(context: any) {
           replaceToken = replaceToken2;
         }
       }
-      const response = await HTTPGetProfil({ token: replaceToken})
-      console.log(response.data)
-      const data = response.data.data
-      return {
-        props: {
-          data: data
-        },
+
+      if (replaceToken === '') {
+        return {
+          redirect: {
+            permanent: false,
+            destination: "/login"
+          }
+        }
+      } else {
+        const response = await HTTPGetProfil({ token: replaceToken})
+        console.log(response.data)
+        const data = response.data.data
+        return {
+          props: {
+            data: data
+          },
+        }
       }
     }
   } catch (error) {

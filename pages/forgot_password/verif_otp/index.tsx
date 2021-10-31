@@ -4,14 +4,14 @@ import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form';
 import { RiArrowLeftLine, RiShieldKeyholeLine } from 'react-icons/ri';
 import { Slide, toast } from 'react-toastify';
-import { HTTPForgotPassword, HTTPVerifOtp } from '../../../api/auth';
+import { HTTPCheckResetPwdToken, HTTPForgotPassword, HTTPVerifOtp } from '../../../api/auth';
 import { IVerifOtpValidation } from '../../../types/formValidation';
 import Header from '../components/Header';
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../../store';
 import { RootState } from '../../../store/rootReducer';
-import { setEmail, setOtp } from '../../../store/forgotPwd';
+import { setForgotPwdEmail, setForgotPwdOtp, setForgotPwdReset } from '../../../store/forgotPwd';
 
 const useStyles = makeStyles({
   bgPrimary: {
@@ -50,12 +50,7 @@ const VerifOtpPage = () => {
     let mounted = true
     
     if (mounted) {
-      if(forgotPwdRedux.email === '') {
-        alert('mohon maaf anda belum memasukan email')
-        return router.back()
-      } else {
-        setemailOtp(forgotPwdRedux.email)
-      }
+      checkPwd()
     }
 
     return () => {
@@ -98,20 +93,20 @@ const VerifOtpPage = () => {
 
       reset(response)
 
-      dispatch(setOtp({otp: true}))
+      dispatch(setForgotPwdOtp({otp: true}))
 
       setLoadingSubmitVerifOtp(false)
       setDisableBtnVerifOtp(false)
 
       router.push('/forgot_password/reset_password')
     } catch (error) {
-      const errorOtp = JSON.parse(JSON.stringify(error))
-      console.log(errorOtp.data.message)
+      const errors = JSON.parse(JSON.stringify(error))
+      console.log(errors)
 
       setLoadingSubmitVerifOtp(false)
       setDisableBtnVerifOtp(false)
 
-      toast(errorOtp.data.message, {
+      toast(errors.data.message, {
         position: "bottom-right",
         autoClose: 5000,
         type: 'error',
@@ -121,8 +116,22 @@ const VerifOtpPage = () => {
         transition: Slide
       })
 
-      dispatch(setEmail({email: ''}))
-      router.push('/forgot_password')
+      // dispatch(setForgotPwdEmail({email: ''}))
+      // router.back()
+    }
+  }
+
+  const checkPwd = async () => {
+    try {
+      const response = await HTTPCheckResetPwdToken({ email: forgotPwdRedux.email })
+
+      setemailOtp(forgotPwdRedux.email)
+      // const data = response.data.data
+    } catch (error) {
+      // console.log(error)
+      dispatch(setForgotPwdReset({ email: '', otp: false }))
+      alert('mohon maaf, anda tidak mendapatkan akses ke halaman ini')
+      router.back()
     }
   }
 
@@ -133,6 +142,7 @@ const VerifOtpPage = () => {
   return (
     <>
       <Header 
+        step={2}
         title="Verif OTP" 
         show2={forgotPwdRedux.otp === true ? true : false}
         title2={forgotPwdRedux.otp === true ? 'Reset Password' : ''}
@@ -173,7 +183,6 @@ const VerifOtpPage = () => {
                     color="primary"
                     variant="contained"
                     disabled={disableBtnVerifOtp}
-                    autoFocus
                     type="submit"
                     fullWidth={true}
                   >

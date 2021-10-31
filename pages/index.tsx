@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { MdAccountCircle, MdPerson } from 'react-icons/md';
 import { RiArrowDownSLine, RiLogoutBoxRLine, RiTeamFill, RiParentLine, RiMoneyDollarBoxLine, RiLuggageCartLine, RiSuitcase2Line, RiCopyrightLine } from 'react-icons/ri';
 import { useSelector, useDispatch } from 'react-redux';
-import { AppDispatch } from '../store';
+import { AppDispatch, store } from '../store';
 import { RootState } from '../store/rootReducer';
 import moment from 'moment';
 import router from 'next/router';
@@ -26,10 +26,14 @@ const dataProduct = [
   title: 'buat lowongan'},
 ]
 
-const Home: NextPage = () => {
+const Home = ({data}: any) => {
   const loading = useSelector((state: RootState) => state.loading);
   const userRedux = useSelector((state: RootState) => state.user);
   const dispatch: AppDispatch = useDispatch()
+
+  React.useEffect(() => {
+    console.log(data)
+  }, [])
   
   /* -------------------------------------------------------------------------- */
   /*                                 show page                                  */
@@ -63,3 +67,46 @@ const Home: NextPage = () => {
 }
 
 export default Home
+
+export async function getServerSideProps(context: any) {
+    if (context.req.headers.cookie === undefined) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/login"
+        }
+      }
+    } else {
+      let replaceToken = ''
+      const a = JSON.parse(JSON.stringify(context.req.headers.cookie))
+      let splitt = a.split(" ");
+
+      // console.log('token ada = ',splitt)
+
+      for (var j = 0; j < splitt.length; j++) {
+        if (splitt[j].match('token')) {
+          console.log('token ada = ', splitt[j])
+          const replaceToken2 = splitt[j].replace('token=', '');
+          replaceToken = replaceToken2;
+        }
+      }
+
+      if (replaceToken === '') {
+        return {
+          redirect: {
+            permanent: false,
+            destination: "/login"
+          }
+        }
+      } else {
+        const data = {
+          isAuth: true
+        }
+        return {
+          props: {
+            data: data
+          },
+        }
+      }
+    }
+}

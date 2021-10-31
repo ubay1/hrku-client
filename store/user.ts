@@ -48,6 +48,8 @@ export const expiredToken = (dispatch: AppDispatch, message?: string) => {
     email: '',
     role_name: '',
     slug_role_name: '',
+    foto: '',
+    gender: '',
   }))
 
   dispatch(setLoading({
@@ -141,10 +143,15 @@ const userSlice = createSlice({
       state.token = action.payload.token
       Cookies.set('token', action.payload.token)
     },
+    setAuthFalse(state, action: PayloadAction<{ token: string }>) {
+      state.token = action.payload.token
+      Cookies.remove('token')
+    },
   },
 })
 export const {
   setReduxUsersProfile,
   setAuthStatus,
+  setAuthFalse
 } = userSlice.actions
 export default userSlice.reducer

@@ -59,14 +59,29 @@ export async function HTTPVerifOtp(param: { email: string, otp: string }): Promi
   })
 }
 
-export async function HTTPResetPwd(param: { new_password: string, new_password_confirm: string }): Promise<any> {
+export async function HTTPResetPwd(param: { email: any, new_password: string, new_password_confirm: string }): Promise<any> {
   return new Promise(async (resolve, reject) => {
     try {
       const data = {
+        email: param.email,
         new_password: param.new_password,
         new_password_confirm: param.new_password_confirm
       }
       const response = await AxiosNormal().post(`${SERVER_URL}/user/resetPassword`, data)
+      return resolve(response)
+    } catch (error) {
+      return reject(error)
+    }
+  })
+}
+
+export async function HTTPCheckResetPwdToken(param: { email: any }): Promise<any> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = {
+        email: param.email,
+      }
+      const response = await AxiosNormal().post(`${SERVER_URL}/user/checkResetPassword`, data)
       return resolve(response)
     } catch (error) {
       return reject(error)

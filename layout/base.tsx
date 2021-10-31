@@ -36,20 +36,14 @@ export const Base: React.FC = ({children}, page) => {
   const tokenCookies = Cookies.get('token')
 
   /* -------------------------------------------------------------------------- */
-  /*                                 state redux                                */
+  /*                                 hooks                                      */
   /* -------------------------------------------------------------------------- */
   const loading = useSelector((state: RootState) => state.loading);
   const userRedux = useSelector((state: RootState) => state.user);
   const dispatch: AppDispatch = useDispatch()
-  
-  /* -------------------------------------------------------------------------- */
-  /*                                    state                                   */
-  /* -------------------------------------------------------------------------- */
+
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  /* -------------------------------------------------------------------------- */
-  /*                                  hooks                                     */
-  /* -------------------------------------------------------------------------- */
   useEffect(() => {
     // console.log(userRedux)
     if (tokenCookies === '' || tokenCookies === undefined) {

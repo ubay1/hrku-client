@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Slide, toast } from 'react-toastify';
 import { HTTPForgotPassword } from '../../api/auth';
 import { AppDispatch } from '../../store';
-import forgotPwd, { setEmail } from '../../store/forgotPwd';
+import forgotPwd, { setForgotPwdEmail } from '../../store/forgotPwd';
 import { RootState } from '../../store/rootReducer';
 import { IForgotPwdValidation } from '../../types/formValidation';
 import Header from './components/Header';
@@ -79,7 +79,7 @@ const ForgotPasswordPage = () => {
 
       reset(response)
 
-      dispatch(setEmail({email: params.email}))
+      dispatch(setForgotPwdEmail({email: params.email}))
 
       router.push({
         pathname: 'forgot_password/verif_otp',
@@ -88,7 +88,19 @@ const ForgotPasswordPage = () => {
       setLoadingSubmitForgotPwd(false)
       setDisableBtnForgotPwd(false)
     } catch (error) {
-      console.log(error)
+      const errors = JSON.parse(JSON.stringify(error))
+      console.log(errors)
+      if (errors.status === 403) {
+        toast(errors.data.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          type: 'error',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          transition: Slide
+        })
+      }
       setLoadingSubmitForgotPwd(false)
       setDisableBtnForgotPwd(false)
     }
@@ -101,6 +113,7 @@ const ForgotPasswordPage = () => {
   return (
     <>
       <Header 
+        step={1}
         title="Lupa Password" 
         show2={forgotPwdRedux.email !== '' ? true : false} 
         title2={forgotPwdRedux.email !== '' ? 'Verif Otp' : ''}
@@ -145,7 +158,6 @@ const ForgotPasswordPage = () => {
                       color="primary"
                       variant="contained"
                       disabled={disableBtnForgotPwd}
-                      autoFocus
                       type="submit"
                       fullWidth={true}
                     >
