@@ -7,7 +7,7 @@ import { MdAccountCircle, MdPerson } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/rootReducer";
 import { AppDispatch } from "../store";
-import { initialStateUserAuthByAsync } from "../store/user";
+import { initialStateUserAuthByAsync, setReduxUsersProfile } from "../store/user";
 import { setLoading } from "../store/loading";
 import Lottie from "lottie-react";
 import LoadingScreen from '../assets/lottie_file/loading-searching.json';
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Base: React.FC = ({children}, page) => {
+export const Base = (props: any) => {
   const classes = useStyles()
   
   const yearNow = moment().format('YYYY')
@@ -43,6 +43,7 @@ export const Base: React.FC = ({children}, page) => {
   const dispatch: AppDispatch = useDispatch()
 
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [hideFooter, sethideFooter] = React.useState(false);
 
   useEffect(() => {
     // console.log(userRedux)
@@ -70,6 +71,10 @@ export const Base: React.FC = ({children}, page) => {
     setAnchorEl(null);
   };
 
+  function cekFooterIsHide(data: any) {
+    sethideFooter(data)
+  }
+
 
   if (loading.show === true) {
     return(
@@ -88,10 +93,10 @@ export const Base: React.FC = ({children}, page) => {
           title="HRKU All In One Apps"
           description="Hrku adalah aplikasi AllInOne yang dibuat untuk memudahkan HRD dalam mengelola penggajian, data karyawan, cuti karyawan, dll."
         />
-        {children}
+        {props.children}
 
         {/* footer */}
-        <div className="footer flex justify-center py-4 bg-white text-gray-300 items-center bottom-0 w-full">
+        <div className={`${props.footer === 'false' ? 'hidden' : 'flex'} footer justify-center py-4 bg-white text-gray-300 items-center bottom-0 w-full`}>
           <RiCopyrightLine size="18px" /> HRKU  {yearNow}
         </div>
       </div>

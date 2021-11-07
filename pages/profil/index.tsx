@@ -754,7 +754,7 @@ export async function getServerSideProps(context: any) {
 
       for (var j = 0; j < splitt.length; j++) {
         if (splitt[j].match('token')) {
-          console.log('token ada = ', splitt[j])
+          // console.log('token ada = ', splitt[j])
           const replaceToken2 = splitt[j].replace('token=','');
           replaceToken = replaceToken2;
         }

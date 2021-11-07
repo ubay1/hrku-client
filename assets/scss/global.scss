@@ -35,8 +35,14 @@ a {
 .header {
   .foto {
     &:hover {
-      background-color: aliceblue;
+      background-color: #f8f8f8;
       border-radius: 10px;
+    }
+    .btn-foto {
+      &:hover {
+        background-color: #f8f8f8 !important;
+        border-radius: 10px;
+      } 
     }
   }
 }
@@ -99,7 +105,7 @@ a {
   }
   .body {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     text-align: center;
     .card-product {
@@ -214,4 +220,11 @@ a {
       }
     }
   }
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               kelola karyawan                              */
+/* -------------------------------------------------------------------------- */
+.kelola_karyawan {
+  font-family: 'Poppins';
 }

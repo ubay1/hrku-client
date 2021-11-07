@@ -9,11 +9,12 @@ import Image from 'next/image'
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch } from '../store';
 import { RootState } from '../store/rootReducer';
-import Logo from "../assets/images/hrlogo.png";
+import Logo from "../assets/images/logo2.png";
 import Blank from "../assets/images/blank.png";
 import moment from 'moment';
 import { setAuthFalse, setReduxUsersProfile } from '../store/user';
 import { Slide, toast } from 'react-toastify';
+import { setLoading } from '../store/loading';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -87,20 +88,22 @@ const Header = () => {
           pauseOnHover: true,
           transition: Slide
         })
+
+        // window.location.replace('/login')
+
         dispatch(setAuthFalse({
           token: ''
         }))
-        dispatch(setReduxUsersProfile({
-          fullname: '',
-          address: '',
-          phone: '',
-          email: '',
-          role_name: '',
-          slug_role_name: '',
-          foto: '',
-          gender: '',
-        }))
-        // window.location.replace('/login')
+        // dispatch(setReduxUsersProfile({
+        //   fullname: '',
+        //   address: '',
+        //   phone: '',
+        //   email: '',
+        //   role_name: '',
+        //   slug_role_name: '',
+        //   foto: '',
+        //   gender: '',
+        // }))
       }
     } catch (error) {
       console.log(error)
@@ -123,6 +126,7 @@ const Header = () => {
             aria-controls="simple-menu"
             aria-haspopup="true"
             onClick={handleClick}
+            className='btn-foto'
           >
             <Typography
               variant="button"

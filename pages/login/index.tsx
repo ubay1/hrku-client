@@ -4,7 +4,7 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import theme from '../../utils/theme';
 import { RiEyeCloseLine, RiEyeLine, RiLock2Line, RiMailLine, RiShieldKeyholeFill } from "react-icons/ri";
-import Logo from "../../assets/images/hrlogo.png";
+import Logo from "../../assets/images/logo2.png";
 import DialogMigrate from '../../components/Dialog';
 import { blue, red } from '@material-ui/core/colors';
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
@@ -312,13 +312,16 @@ const Login = () => {
                   {loadingSubmit && <CircularProgress size={24} className={classes.buttonProgress} />}
                 </div>
                 
-                <div className={`mt-2 cursor-pointer ${classes.colorPrimary}`}
+                <Button 
+                  variant="text"
+                  disabled={loadingSubmit === true ? true : false}
+                  className={`mt-2 ${classes.colorPrimary}`}
                   onClick={() => {
                     router.push('/forgot_password')
                   }}
                 >
                   Lupa Password ?
-                </div>
+                </Button>
 
               </form>
             </CardContent>

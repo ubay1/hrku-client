@@ -16,24 +16,56 @@ import Cookies from "js-cookie";
 import Header from '../components/Header';
 
 const dataProduct = [
-  {icon: <div className="bg-red-50 p-2 rounded-full"><RiParentLine size="30px" color="red"/></div>, 
-  title: 'kelola karyawan'},
-  {icon: <div className="bg-green-50 p-2 rounded-full"><RiMoneyDollarBoxLine size="30px" color="green"/></div>, 
-  title: 'kelola penggajian'},
-  {icon: <div className="bg-blue-50 p-2 rounded-full"><RiLuggageCartLine size="30px" color="blue"/></div>, 
-  title: 'cuti karyawan'},
-  {icon: <div className="bg-yellow-50 p-2 rounded-full"><RiSuitcase2Line size="30px" color="orange"/></div>, 
-  title: 'buat lowongan'},
+  {
+    icon: <div className="bg-red-50 p-2 rounded-full"><RiParentLine size="30px" color="red"/></div>, 
+    title: 'kelola karyawan',
+    link: 'kelola/karyawan'
+  },
+  {
+    icon: <div className="bg-green-50 p-2 rounded-full"><RiMoneyDollarBoxLine size="30px" color="green"/></div>, 
+    title: 'kelola penggajian',
+    link: 'kelola/karyawan'
+  },
+  // {
+  //   icon: <div className="bg-blue-50 p-2 rounded-full"><RiLuggageCartLine size="30px" color="blue"/></div>, 
+  //   title: 'cuti karyawan',
+  //   link: 'kelola/karyawan'
+  // },
+  {
+    icon: <div className="bg-yellow-50 p-2 rounded-full"><RiSuitcase2Line size="30px" color="orange"/></div>, 
+    title: 'buat lowongan',
+    link: 'kelola/karyawan'
+  },
 ]
 
 const Home = ({data}: any) => {
+  /* -------------------------------------------------------------------------- */
+  /*                                   hooks                                    */
+  /* -------------------------------------------------------------------------- */
+  const dispatch: AppDispatch = useDispatch()
   const loading = useSelector((state: RootState) => state.loading);
   const userRedux = useSelector((state: RootState) => state.user);
-  const dispatch: AppDispatch = useDispatch()
 
   React.useEffect(() => {
-    console.log(data)
+    // console.log(data)
   }, [])
+  
+  /* -------------------------------------------------------------------------- */
+  /*                                   handle form                              */
+  /* -------------------------------------------------------------------------- */
+  
+  /* -------------------------------------------------------------------------- */
+  /*                                   method                                   */
+  /* -------------------------------------------------------------------------- */
+  const changePage = (link: string) => {
+    return router.push(`/${link}`)
+  };
+  
+  /* -------------------------------------------------------------------------- */
+  /*                                   show page                                */
+  /* -------------------------------------------------------------------------- */
+  
+
   
   /* -------------------------------------------------------------------------- */
   /*                                 show page                                  */
@@ -53,10 +85,16 @@ const Home = ({data}: any) => {
         <div className="body mx-4 mt-6">
           {dataProduct.map((item: any, index: number) => {
             return(
-              <div key={`key product - ${index}`} className="card-product mb-2 border-gray-100 border-2 p-4 rounded-lg">
+              <button 
+                key={`key product - ${index}`} 
+                className="card-product mb-2 border-gray-100 border-2 p-4 rounded-lg"
+                onClick={()=>{
+                  changePage(item.link)
+                }}
+              >
                 <div className="flex items-center justify-center">{item.icon}</div>
                 <div className="title mt-2 text-base capitalize">{item.title}</div>
-              </div>
+              </button>
             )
           })}
         </div>
@@ -85,7 +123,7 @@ export async function getServerSideProps(context: any) {
 
       for (var j = 0; j < splitt.length; j++) {
         if (splitt[j].match('token')) {
-          console.log('token ada = ', splitt[j])
+          // console.log('token ada = ', splitt[j])
           const replaceToken2 = splitt[j].replace('token=', '');
           replaceToken = replaceToken2;
         }
