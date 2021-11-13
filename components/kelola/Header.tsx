@@ -47,6 +47,9 @@ const HeaderKelola = (props: IHeaderKelola) => {
   const dispatch: AppDispatch = useDispatch()
 
   const myAvatar = process.env.PHOTO_URL+(userRedux.profile.foto as any)+'?'+moment()
+
+  const wrapperRef = React.useRef<any>(null);
+  useOutsideAlerter(wrapperRef);
   
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openDropdownUser, setopenDropdownUser] = React.useState(false);
@@ -61,6 +64,22 @@ const HeaderKelola = (props: IHeaderKelola) => {
   /* -------------------------------------------------------------------------- */
   function handleChangeInputSearch(event: any) {
     setvalueSearchData(event.target.value);
+  }
+
+  function useOutsideAlerter(ref: any) {
+    React.useEffect(() => {
+      function handleClickOutside(event: any) {
+        if (ref.current && !ref.current.contains(event.target)) {
+          setopenDropdownUser(false)
+        }
+      }
+      // Bind the event listener
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        // Unbind the event listener on clean up
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [ref]);
   }
 
   const handleClick = (event: any) => {
@@ -151,6 +170,7 @@ const HeaderKelola = (props: IHeaderKelola) => {
             onClick={()=>{
               setopenDropdownUser(!openDropdownUser)
             }}
+            ref={wrapperRef}
           >
             <div className='ml-1 h-full flex justify-center items-center'>
               {
@@ -184,7 +204,9 @@ const HeaderKelola = (props: IHeaderKelola) => {
               <RiArrowDownSLine size="20px" />
             </div>
           </div>
+          
           <div 
+            // ref={wrapperRef}
             className={
               `absolute right-1 z-10 ${openDropdownUser ? 'menu-profil opacity-100 top-12' : 'transition-opacity opacity-0'} bg-white w-9/12 shadow-lg p-2 rounded-md`
             }
@@ -199,4 +221,4 @@ const HeaderKelola = (props: IHeaderKelola) => {
   )
 }
 
-export default memo(HeaderKelola)
+export default React.memo(HeaderKelola)

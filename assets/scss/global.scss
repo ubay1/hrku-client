@@ -219,6 +219,15 @@ a {
   // }
 }
 
+#mySharedown{
+  display: none;
+  border: 1px solid black;
+}
+
+#mySharedown.show {
+  display: block;
+}
+
 @media screen and (min-width: 576px) and (max-width: 767.8px) {
   .profil {
     // height: 100vh;
