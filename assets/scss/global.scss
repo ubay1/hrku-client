@@ -29,6 +29,19 @@ a {
   display: none !important;
 }
 
+@keyframes topToBottom {
+  0% {
+    top: 0px;
+  }
+  50% {
+    top: 55px;
+  }
+  100% {
+    top: 48px;
+  }
+}
+
+
 /* -------------------------------------------------------------------------- */
 /*                                   header                                   */
 /* -------------------------------------------------------------------------- */
@@ -39,6 +52,7 @@ a {
       border-radius: 10px;
     }
     .btn-foto {
+      text-transform: capitalize;
       &:hover {
         background-color: #f8f8f8 !important;
         border-radius: 10px;
@@ -188,6 +202,21 @@ a {
       align-items: flex-start;
     }
   }
+}
+
+.menu-profil {
+  animation: topToBottom ease 1s;
+
+  // &::before {
+  //   content: '';
+  //   position: absolute;
+  //   top: -5px;
+  //   right: 0px;
+  //   height: 8px;
+  //   border-left: 8px solid transparent;
+  //   border-right: 8px solid transparent;
+  //   border-bottom: 8px solid #fff;
+  // }
 }
 
 @media screen and (min-width: 576px) and (max-width: 767.8px) {

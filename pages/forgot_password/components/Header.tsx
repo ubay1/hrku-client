@@ -1,5 +1,6 @@
 import { makeStyles } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
+import { IconButton } from '@mui/material';
 import {useRouter} from 'next/router';
 import React from 'react'
 import { RiArrowLeftLine, RiArrowRightLine } from 'react-icons/ri';
@@ -40,28 +41,32 @@ const Header = (props: {step: number, title: string, show2?:boolean, title2?: st
   
   return (
     <div className={`h-14 ${classes.bgPrimary} flex justify-between items-center pl-4 pr-4`}>
-      <div className="flex">
-        <RiArrowLeftLine 
-          color="#fff" 
-          size="25" 
-          onClick={() => {
-            props.step === 1 ?
-            router.push('/login') :
-            router.back()
-          }} 
-          className="cursor-pointer"
+      <div className="flex items-center">
+        <IconButton aria-label="delete">
+          <RiArrowLeftLine 
+            color="#fff" 
+            size="25" 
+            onClick={() => {
+              props.step === 1 ?
+              router.push('/login') :
+              router.back()
+            }} 
+            className="cursor-pointer"
           />
+        </IconButton>
         <h3 className="text-white text-base ml-4">{props.title}</h3>
       </div>
 
-      <div className={`${props.show2 === true ? 'flex' : 'hidden'}`}>
+      <div className={`${props.show2 === true ? 'flex items-center' : 'hidden'}`}>
         <h3 className="text-white text-base mr-4">{props.title2}</h3>
-        <RiArrowRightLine 
-          color="#fff" 
-          size="25" 
-          onClick={() => { router.push(props.routeName) }} 
-          className="cursor-pointer"
+        <IconButton aria-label="delete">
+          <RiArrowRightLine 
+            color="#fff" 
+            size="25" 
+            onClick={() => { router.push(props.routeName) }} 
+            className="cursor-pointer"
           />
+        </IconButton>
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { RiHome2Line, RiSettings5Line } from 'react-icons/ri'
-import { FaUmbrellaBeach } from 'react-icons/fa'
+import { RiParentLine, RiSettings5Line } from 'react-icons/ri'
+import { FaMoneyBillWave } from 'react-icons/fa'
 import { TListMenu } from '../../types/listMenu'
 
 interface IMenuKelola {
@@ -9,11 +9,11 @@ interface IMenuKelola {
 }
 
 const MenuKelola = (props: IMenuKelola) => {
-
+  console.log('render child menu')
   /* -------------------------------------------------------------------------- */
   /*                                   hooks                                    */
   /* -------------------------------------------------------------------------- */
-  const [activeMenu, setactiveMenu] = useState('beranda')
+  const [activeMenu, setactiveMenu] = useState('kelola_karyawan')
   /* -------------------------------------------------------------------------- */
   /*                                   handle form                              */
   /* -------------------------------------------------------------------------- */
@@ -43,10 +43,10 @@ const MenuKelola = (props: IMenuKelola) => {
             >
               <div className={`ml-3 ${item.slug === activeMenu ? 'text-white' : 'text-gray-500'}`} >
                 {
-                  item.slug === 'beranda' ? 
-                  <RiHome2Line size={18} /> :
-                  item.slug === 'cuti' ?
-                  <FaUmbrellaBeach size={18} /> : 
+                  item.slug === 'kelola_karyawan' ? 
+                  <RiParentLine size={18} /> :
+                  item.slug === 'kelola_penggajian' ?
+                  <FaMoneyBillWave size={18} /> : 
                   <RiSettings5Line size={18} />
                 }
               </div>
@@ -66,4 +66,4 @@ const MenuKelola = (props: IMenuKelola) => {
   )
 }
 
-export default MenuKelola
+export default React.memo(MenuKelola)
