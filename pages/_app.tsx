@@ -8,15 +8,18 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import React from 'react';
 import theme from '../utils/theme';
 import Cookies from "js-cookie";
-import {persistor, store} from '../store'
+import {persistor, store, wrapper} from '../store'
 import { Provider } from 'react-redux'
+import { Provider as SessionProvider } from 'next-auth/client'
 import NProgress from "nprogress"
 import '../public/nprogress.css'
 import router from "next/router"
 import Head from "next/head"
 import { PersistGate } from 'redux-persist/integration/react';
+import { AuthProvider, getUser } from '../context/authContext';
+import App from 'next/app';
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps, auth }: any) {
   
   React.useEffect(() => {
     const jssStyles: any = document.querySelector('#jss-server-side');
@@ -53,13 +56,22 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Head>
           <link
           rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs    /nprogress/0.2.0/nprogress.min.css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css"
         />
         </Head>
-        <Component {...pageProps} />
+        <AuthProvider myAuth={auth}>
+          <Component {...pageProps} />
+        </AuthProvider>
       </ThemeProvider>
       </PersistGate>
     </Provider>
   );
 }
-export default MyApp
+
+MyApp.getInitialProps = async (appContext: any) => {
+  const appProps = await App.getInitialProps(appContext)
+  const auth = await getUser(appContext.ctx)
+  return { ...appProps, auth: auth }
+}
+
+export default wrapper.withRedux(MyApp)

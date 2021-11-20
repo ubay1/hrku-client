@@ -12,6 +12,8 @@ import { AppDispatch, store } from '../../../store';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/rootReducer';
 import { setForgotPwdEmail, setForgotPwdReset } from '../../../store/forgotPwd';
+import Auth from '../../../layout/auth';
+import { useAuth } from '../../../context/authContext';
 
 const useStyles = makeStyles({
   bgPrimary: {
@@ -42,22 +44,37 @@ const ResetPwdPage = () => {
   /* -------------------------------------------------------------------------- */
   const classes = useStyles();
   const router = useRouter();
+  const { auth } = useAuth()
   
   const [loadingSubmitResetPwd, setLoadingSubmitResetPwd] = React.useState(false);
   const [disableBtnResetPwd, setDisableBtnResetPwd] = React.useState(false);
   const [emailOtp, setemailOtp] = React.useState('');
+  const [loadingPage, setloadingPage] = React.useState<any>(null)
   
   useEffect(() => {
     let mounted = true
     
     if (mounted) {
       checkPwd()
+
+      if (auth.status === "SIGNED_OUT") {
+        setloadingPage('false')
+      }
+  
+      if (auth.status === "SIGNED_IN") {
+        setloadingPage('true')
+        window.location.replace('/')
+      }
     }
 
     return () => {
       mounted = false
     }
   }, [])
+
+  React.useEffect(() => {
+    console.log(loadingPage)
+  }, [loadingPage]) 
 
   /* -------------------------------------------------------------------------- */
   /*                                   handle form                              */
@@ -137,7 +154,7 @@ const ResetPwdPage = () => {
   /* -------------------------------------------------------------------------- */
 
   return (
-    <>
+    <Auth loading={loadingPage}>
       <Header 
         step={3}
         title="Reset Password" 
@@ -214,7 +231,7 @@ const ResetPwdPage = () => {
           </CardContent>
         </Card>
       </div>
-    </>
+    </Auth>
   )
 }
 

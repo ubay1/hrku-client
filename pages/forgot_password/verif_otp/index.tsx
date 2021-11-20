@@ -12,6 +12,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../../store';
 import { RootState } from '../../../store/rootReducer';
 import { setForgotPwdEmail, setForgotPwdOtp, setForgotPwdReset } from '../../../store/forgotPwd';
+import Auth from '../../../layout/auth';
+import { useAuth } from '../../../context/authContext';
 
 const useStyles = makeStyles({
   bgPrimary: {
@@ -32,7 +34,7 @@ const useStyles = makeStyles({
 
 const VerifOtpPage = () => {
   toast.configure()
-  
+  const { auth } = useAuth()
   /* -------------------------------------------------------------------------- */
   /*                                   hooks                                    */
   /* -------------------------------------------------------------------------- */
@@ -45,18 +47,32 @@ const VerifOtpPage = () => {
   const [loadingSubmitVerifOtp, setLoadingSubmitVerifOtp] = React.useState(false);
   const [disableBtnVerifOtp, setDisableBtnVerifOtp] = React.useState(false);
   const [emailOtp, setemailOtp] = React.useState<any>('');
+  const [loadingPage, setloadingPage] = React.useState<any>(null)
   
   useEffect(() => {
     let mounted = true
     
     if (mounted) {
       checkPwd()
+
+      if (auth.status === "SIGNED_OUT") {
+        setloadingPage('false')
+      }
+  
+      if (auth.status === "SIGNED_IN") {
+        setloadingPage('true')
+        window.location.replace('/')
+      }
     }
 
     return () => {
       mounted = false
     }
   }, [])
+
+  React.useEffect(() => {
+    console.log(loadingPage)
+  }, [loadingPage]) 
 
   /* -------------------------------------------------------------------------- */
   /*                                   handle form                              */
@@ -140,7 +156,7 @@ const VerifOtpPage = () => {
   /* -------------------------------------------------------------------------- */
 
   return (
-    <>
+    <Auth loading={loadingPage}>
       <Header 
         step={2}
         title="Verif OTP" 
@@ -195,7 +211,7 @@ const VerifOtpPage = () => {
           </CardContent>
         </Card>
       </div>
-    </>
+    </Auth>
   )
 }
 

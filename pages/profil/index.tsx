@@ -596,7 +596,7 @@ const Profil = ({data}: IDataUser) => {
   /*                                 show page                                  */
   /* -------------------------------------------------------------------------- */
   return (
-    <Base>
+    <Base footer="false">
       <div className="h-screen profil bg-white">
         <Header />
 

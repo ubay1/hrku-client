@@ -7,6 +7,8 @@ import { RiArrowLeftLine, RiMailLine } from 'react-icons/ri';
 import { useDispatch, useSelector } from 'react-redux';
 import { Slide, toast } from 'react-toastify';
 import { HTTPForgotPassword } from '../../api/auth';
+import { useAuth } from '../../context/authContext';
+import Auth from '../../layout/auth';
 import { AppDispatch } from '../../store';
 import forgotPwd, { setForgotPwdEmail } from '../../store/forgotPwd';
 import { RootState } from '../../store/rootReducer';
@@ -38,12 +40,29 @@ const ForgotPasswordPage = () => {
   /* -------------------------------------------------------------------------- */
   const classes = useStyles();
   const router = useRouter();
+  const { auth } = useAuth()
 
   const dispatch: AppDispatch = useDispatch()
   const forgotPwdRedux = useSelector((state: RootState) => state.forgotPwd);
 
   const [loadingSubmitForgotPwd, setLoadingSubmitForgotPwd] = React.useState(false);
   const [disableBtnForgotPwd, setDisableBtnForgotPwd] = React.useState(false);
+  const [loadingPage, setloadingPage] = React.useState<any>(null)
+
+  React.useEffect(() => {
+    if (auth.status === "SIGNED_OUT") {
+      setloadingPage('false')
+    }
+
+    if (auth.status === "SIGNED_IN") {
+      setloadingPage('true')
+      window.location.replace('/')
+    }
+  }, []) 
+
+  React.useEffect(() => {
+    console.log(loadingPage)
+  }, [loadingPage])
   
   /* -------------------------------------------------------------------------- */
   /*                                   handle form                              */
@@ -111,7 +130,7 @@ const ForgotPasswordPage = () => {
   /* -------------------------------------------------------------------------- */
   
   return (
-    <>
+    <Auth loading={loadingPage}>
       <Header 
         step={1}
         title="Lupa Password" 
@@ -170,7 +189,7 @@ const ForgotPasswordPage = () => {
           </CardContent>
         </Card>
       </div>
-    </>
+    </Auth>
   )
 }
 

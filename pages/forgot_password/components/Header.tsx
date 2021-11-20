@@ -42,7 +42,7 @@ const Header = (props: {step: number, title: string, show2?:boolean, title2?: st
   return (
     <div className={`h-14 ${classes.bgPrimary} flex justify-between items-center pl-4 pr-4`}>
       <div className="flex items-center">
-        <IconButton aria-label="delete">
+        <button>
           <RiArrowLeftLine 
             color="#fff" 
             size="25" 
@@ -53,20 +53,20 @@ const Header = (props: {step: number, title: string, show2?:boolean, title2?: st
             }} 
             className="cursor-pointer"
           />
-        </IconButton>
+        </button>
         <h3 className="text-white text-base ml-4">{props.title}</h3>
       </div>
 
       <div className={`${props.show2 === true ? 'flex items-center' : 'hidden'}`}>
         <h3 className="text-white text-base mr-4">{props.title2}</h3>
-        <IconButton aria-label="delete">
+        <button>
           <RiArrowRightLine 
             color="#fff" 
             size="25" 
             onClick={() => { router.push(props.routeName) }} 
             className="cursor-pointer"
           />
-        </IconButton>
+        </button>
       </div>
     </div>
   )

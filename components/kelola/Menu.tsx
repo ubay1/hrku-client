@@ -5,6 +5,12 @@ import { TListMenu } from '../../types/listMenu'
 import Image from 'next/image'
 import router from 'next/router';
 import Logo from "../../assets/images/logo2.png";
+import { toast, Slide } from 'react-toastify'
+import { HTTPSubmitLogout } from '../../api/auth'
+import { setAuthFalse } from '../../store/user'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch } from '../../store'
+import { RootState } from '../../store/rootReducer'
 
 interface IMenuKelola {
   listMenu: any,
@@ -16,6 +22,9 @@ const MenuKelola = (props: IMenuKelola) => {
   /* -------------------------------------------------------------------------- */
   /*                                   hooks                                    */
   /* -------------------------------------------------------------------------- */
+  const dispatch: AppDispatch = useDispatch()
+  const userRedux = useSelector((state: RootState) => state.user);
+
   const [activeMenu, setactiveMenu] = useState('kelola_karyawan')
   /* -------------------------------------------------------------------------- */
   /*                                   handle form                              */
@@ -24,7 +33,41 @@ const MenuKelola = (props: IMenuKelola) => {
   /* -------------------------------------------------------------------------- */
   /*                                   method                                   */
   /* -------------------------------------------------------------------------- */
-  
+  const doLogout = async () => {
+    try {
+      const response = await HTTPSubmitLogout({token: userRedux.token})
+
+      if (response.status === 201) {
+        toast('anda telah keluar dari aplikasi', {
+          position: "bottom-right",
+          autoClose: 5000,
+          type: 'success',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          transition: Slide
+        })
+
+        window.location.replace('/login')
+
+        dispatch(setAuthFalse({
+          token: ''
+        }))
+        // dispatch(setReduxUsersProfile({
+        //   fullname: '',
+        //   address: '',
+        //   phone: '',
+        //   email: '',
+        //   role_name: '',
+        //   slug_role_name: '',
+        //   foto: '',
+        //   gender: '',
+        // }))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  };
   /* -------------------------------------------------------------------------- */
   /*                                   show page                                */
   /* -------------------------------------------------------------------------- */
@@ -83,7 +126,7 @@ const MenuKelola = (props: IMenuKelola) => {
       </div>
 
       {/* <div className='px-3'> */}
-      <button className='px-3 mb-3' onClick={()=>alert('ahoyy')}>
+      <button className='px-3 mb-3' onClick={doLogout}>
         <div className='grid grid-flow-col-dense justify-start items-center cursor-pointer w-full py-3 rounded-xl hover:bg-gray-100'>
           <div className='flex'>
             <div className={`ml-3 text-gray-500`} >

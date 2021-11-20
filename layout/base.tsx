@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import Image from 'next/image'
 import Logo from "../assets/images/hrlogo.png";
-import { AppBar, Toolbar, IconButton, Typography, Button, makeStyles, Menu, MenuItem } from "@material-ui/core";
+import { AppBar, Toolbar, IconButton, Typography, Button, makeStyles, Menu, MenuItem, CircularProgress } from "@material-ui/core";
 import { RiMenu3Fill,RiArrowDownSLine, RiLogoutBoxRLine, RiCopyrightLine } from "react-icons/ri";
 import { MdAccountCircle, MdPerson } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/rootReducer";
-import { AppDispatch } from "../store";
+import { AppDispatch, wrapper } from "../store";
 import { initialStateUserAuthByAsync, setReduxUsersProfile } from "../store/user";
 import { setLoading } from "../store/loading";
 import Lottie from "lottie-react";
@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import router from "next/router";
 import { NextSeo } from "next-seo";
 import moment from "moment";
+import { useAuth } from "../context/authContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,8 +29,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Base = (props: any) => {
+export const Base = (props: {children: any, footer: any, loading: any}) => {
   const classes = useStyles()
+
+  const {auth} = useAuth()
   
   const yearNow = moment().format('YYYY')
 
@@ -45,20 +48,24 @@ export const Base = (props: any) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [hideFooter, sethideFooter] = React.useState(false);
 
-  useEffect(() => {
-    // console.log(userRedux)
-    if (tokenCookies === '' || tokenCookies === undefined) {
-      router.push('/login')
-    } else {
-      setTimeout(() => {
-        if (userRedux.token !== '') {
-          dispatch(setLoading({show: false}))
-        } else {
-          initialStateUserAuthByAsync(dispatch)
-        }
-      }, 1000);
-    }
-  }, [dispatch, userRedux.token])
+  React.useEffect(() => {
+    console.log('auth base = ',auth)
+  }, [])
+
+  // useEffect(() => {
+  //   // console.log(userRedux)
+  //   if (tokenCookies === '' || tokenCookies === undefined) {
+  //     router.push('/login')
+  //   } else {
+  //     setTimeout(() => {
+  //       if (userRedux.token !== '') {
+  //         dispatch(setLoading({show: false}))
+  //       } else {
+  //         initialStateUserAuthByAsync(dispatch)
+  //       }
+  //     }, 1000);
+  //   }
+  // }, [dispatch, userRedux.token])
 
   /* -------------------------------------------------------------------------- */
   /*                                   method                                   */
@@ -93,7 +100,16 @@ export const Base = (props: any) => {
           title="HRKU All In One Apps"
           description="Hrku adalah aplikasi AllInOne yang dibuat untuk memudahkan HRD dalam mengelola penggajian, data karyawan, cuti karyawan, dll."
         />
-        {props.children}
+        {
+          props.loading === 'true' || props.loading === null ?
+            <div className='h-full min-h-screen flex flex-col justify-center items-center'>
+              <CircularProgress />
+              {/* <div className=''>
+                Memuat halaman ..
+              </div> */}
+            </div>
+          : props.children
+        }
 
         {/* footer */}
         <div className={`${props.footer === 'false' ? 'hidden' : 'flex'} footer justify-center py-4 bg-white text-gray-300 items-center bottom-0 w-full`}>
