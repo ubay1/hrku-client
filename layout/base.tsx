@@ -41,9 +41,9 @@ export const Base = (props: {children: any, footer: any, loading: any}) => {
   /* -------------------------------------------------------------------------- */
   /*                                 hooks                                      */
   /* -------------------------------------------------------------------------- */
+  const dispatch: AppDispatch = useDispatch()
   const loading = useSelector((state: RootState) => state.loading);
   const userRedux = useSelector((state: RootState) => state.user);
-  const dispatch: AppDispatch = useDispatch()
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [hideFooter, sethideFooter] = React.useState(false);
@@ -103,7 +103,8 @@ export const Base = (props: {children: any, footer: any, loading: any}) => {
         {
           props.loading === 'true' || props.loading === null ?
             <div className='h-full min-h-screen flex flex-col justify-center items-center'>
-              <CircularProgress />
+              <Lottie animationData={LoadingScreen} style={{ width: 200 }} />
+              {/* <CircularProgress /> */}
               {/* <div className=''>
                 Memuat halaman ..
               </div> */}

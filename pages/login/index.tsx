@@ -5,7 +5,6 @@ import React, { useEffect, useState } from 'react'
 import theme from '../../utils/theme';
 import { RiEyeCloseLine, RiEyeLine, RiLock2Line, RiMailLine, RiShieldKeyholeFill } from "react-icons/ri";
 import Logo from "../../assets/images/logo2.png";
-import DialogMigrate from '../../components/Dialog';
 import { blue, red } from '@material-ui/core/colors';
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { Router, useRouter } from 'next/router'
@@ -239,13 +238,6 @@ const Login = (props: any) => {
   /* -------------------------------------------------------------------------- */
   /*                                 show page                                  */
   /* -------------------------------------------------------------------------- */
-  if (loading.show === true) {
-    return(
-      <div className="flex items-center justify-center flex-col h-screen">
-        <Lottie animationData={LoadingScreen} style={{ width: 200 }} />
-      </div>
-    )
-  } else {
     return (
       <Auth loading={loadingPage}>
         <div className="h-screen bg-login">
@@ -349,10 +341,8 @@ const Login = (props: any) => {
             </Card>
           </div>
         </div>
-      </Auth>
-        
+      </Auth>   
     )
-  }
 }
 
 // export async function getServerSideProps(context: any) {
